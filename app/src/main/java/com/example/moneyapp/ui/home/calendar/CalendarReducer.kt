@@ -1,6 +1,7 @@
 package com.example.moneyapp.ui.home.calendar
 
 import java.time.LocalDate
+import java.time.YearMonth
 
 object CalendarReducer {
     fun reduce(s: CalendarState, e: CalendarEvent): CalendarState = when (e) {
@@ -41,14 +42,18 @@ object CalendarReducer {
     private fun handleClickedMoveNextDay(
         state: CalendarState
     ): CalendarState {
-        val day = state.selectedDate.plusDays(1)
-        return state.copy(selectedDate = day)
+        val newDate = state.selectedDate.plusDays(1)
+        val newYearMonth = YearMonth.from(newDate)
+
+        return state.copy(yearMonth = if (state.yearMonth != newYearMonth) newYearMonth else state.yearMonth, selectedDate = newDate)
     }
 
     private fun handleClickedMovePrevDay(
         state: CalendarState
     ): CalendarState {
-        val day = state.selectedDate.minusDays(1)
-        return state.copy(selectedDate = day)
+        val newDate = state.selectedDate.minusDays(1)
+        val newYearMonth = YearMonth.from(newDate)
+
+        return state.copy(yearMonth = if (state.yearMonth != newYearMonth) newYearMonth else state.yearMonth, selectedDate = newDate)
     }
 }

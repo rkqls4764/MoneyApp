@@ -47,11 +47,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.moneyapp.ui.theme.BodyText
+import com.example.moneyapp.ui.theme.CalendarText
+import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.ui.theme.EmptyDayBlockColor
 import com.example.moneyapp.ui.theme.MainBlack
 import com.example.moneyapp.ui.theme.MainBlue
 import com.example.moneyapp.ui.theme.MainRed
+import com.example.moneyapp.ui.theme.TitleText
 import com.example.moneyapp.ui.theme.TodayBlockColor
 import com.example.moneyapp.util.isEmptyList
 import java.time.DayOfWeek
@@ -145,13 +148,13 @@ private fun HistoryItem(history: String, onEvent: (CalendarEvent) -> Unit) {
             Text(
                 text = "제목",
                 color = MainBlack,
-                fontSize = 16.sp
+                fontSize = BodyText
             )
 
             Text(
                 text = "금액",
                 color = MainBlue,
-                fontSize = 16.sp,
+                fontSize = BodyText,
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -178,7 +181,7 @@ private fun DayBar(date: LocalDate, onEvent: (CalendarEvent) -> Unit) {
 
         Text(
             text = "${date.dayOfMonth}일",
-            fontSize = 18.sp,
+            fontSize = TitleText,
             fontWeight = FontWeight.Bold
         )
 
@@ -285,13 +288,13 @@ private fun RowScope.SummaryItem(name: String, price: Int, color: Color) {
         ) {
             Text(
                 text = name,
-                fontSize = 14.sp,
+                fontSize = CaptionText,
                 color = MainBlack
             )
 
             Text(
                 text = String.format("%,d", price),
-                fontSize = 14.sp,
+                fontSize = CaptionText,
                 color = color,
                 maxLines = 1,
                 modifier = Modifier.horizontalScroll(state = rememberScrollState()) // 길이가 길면 좌우 스크롤
@@ -311,7 +314,7 @@ private fun Calendar(yearMonth: YearMonth, onEvent: (CalendarEvent) -> Unit) {
         shape = RoundedCornerShape(14.dp)
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 15.dp)
+            modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             YearMonthBar(
                 ymStr = ymStr,
@@ -361,7 +364,7 @@ private fun YearMonthBar(ymStr: String, onEvent: (CalendarEvent) -> Unit) {
 
         Text(
             text = ymStr,
-            fontSize = 18.sp,
+            fontSize = TitleText,
             fontWeight = FontWeight.Bold
         )
 
@@ -403,7 +406,7 @@ private fun WeekBar() {
             ) {
                 Text(
                     text = week,
-                    fontSize = 12.sp,
+                    fontSize = CalendarText,
                     fontWeight = FontWeight.SemiBold
                 )
             }
@@ -494,7 +497,7 @@ private fun RowScope.DayBlock(date: LocalDate, isToday: Boolean, onEvent: (Calen
             ) {
                 Text(
                     text = "${date.dayOfMonth}",
-                    fontSize = 13.sp,
+                    fontSize = CaptionText,
                     color = if (date.dayOfWeek == DayOfWeek.SATURDAY || date.dayOfWeek == DayOfWeek.SUNDAY) MainRed else MainBlack
                 )
             }
