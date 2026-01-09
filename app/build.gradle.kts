@@ -76,4 +76,15 @@ dependencies {
 
     // 아이콘 사용 위해 추가
     implementation("androidx.compose.material:material-icons-extended")
+
+    // Room 사용 위해 추가
+    implementation("androidx.room:room-runtime:2.8.4")
+    implementation("androidx.room:room-ktx:2.8.4")
+    kapt("androidx.room:room-compiler:2.8.4")
+
+    // 테스트 위해 추가
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.room:room-testing:2.8.4") // Room 테스트용
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3") // 코루틴 테스트용
 }
