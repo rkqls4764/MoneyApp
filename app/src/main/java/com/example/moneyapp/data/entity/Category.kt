@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "category_table")
-class Category(
+data class Category(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0, // 카테고리 아이디
 

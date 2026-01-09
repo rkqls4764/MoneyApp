@@ -9,7 +9,7 @@ import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.MoneyTransaction
 
 @Database(
-    entities = [MoneyTransaction::class],
+    entities = [MoneyTransaction::class, Category::class],
     version = 1,
     exportSchema = false
 )
@@ -18,6 +18,7 @@ import com.example.moneyapp.data.entity.MoneyTransaction
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun moneyDao(): MoneyDao
+    abstract fun categoryDao(): CategoryDao
 
     // companion object == static
     companion object {
