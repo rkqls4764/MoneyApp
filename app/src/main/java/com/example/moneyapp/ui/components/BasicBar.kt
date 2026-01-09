@@ -2,12 +2,15 @@ package com.example.moneyapp.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.SsidChart
@@ -21,6 +24,11 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
@@ -31,6 +39,9 @@ import androidx.compose.ui.unit.dp
 import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.ui.theme.MainBlack
 import com.example.moneyapp.ui.theme.TitleText
+import com.example.moneyapp.util.toHmString
+import com.example.moneyapp.util.toYmdString
+import java.util.Date
 
 /* 기본 상단바 */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -175,6 +186,168 @@ fun BasicNumberEditBar(
                     onValueChange(newValue)
                 }
             }
+        )
+    }
+}
+
+/* 기본 날짜 수정 바 */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BasicDateEditBar(
+    name: String,
+    value: Date,
+    onValueChange: (Date) -> Unit,
+    isRequired: Boolean = false
+) {
+    var openDialog by rememberSaveable { mutableStateOf(false) }
+
+    if (openDialog) {
+        BasicDatePickerDialog(
+            initialDate = value,
+            onDismiss = { openDialog = false },
+            onConfirm = { onValueChange(it) }
+        )
+    }
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+    ) {
+        Text(
+            text = buildAnnotatedString {
+                append(name)
+                if (isRequired) {
+                    append(" ")
+                    withStyle(style = SpanStyle(color = Color.Red)) {
+                        append("*")
+                    }
+                }
+            },
+            fontSize = CaptionText,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(start = 16.dp, bottom = 6.dp)
+        )
+
+        IconOutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = value.toYmdString(),
+            icon = Icons.Default.CalendarToday,
+            onClick = { openDialog = true }
+        )
+    }
+}
+
+/* 기본 시간 수정 바 */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BasicTimeEditBar(
+    name: String,
+    value: Date,
+    onValueChange: (Date) -> Unit,
+    isRequired: Boolean = false
+) {
+    var openDialog by rememberSaveable { mutableStateOf(false) }
+
+    if (openDialog) {
+        BasicTimePickerDialog(
+            initialDate = value,
+            onDismiss = { openDialog = false },
+            onConfirm = { onValueChange(it) }
+        )
+    }
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+    ) {
+        Text(
+            text = buildAnnotatedString {
+                append(name)
+                if (isRequired) {
+                    append(" ")
+                    withStyle(style = SpanStyle(color = Color.Red)) {
+                        append("*")
+                    }
+                }
+            },
+            fontSize = CaptionText,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(start = 16.dp, bottom = 6.dp)
+        )
+
+        IconOutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = value.toHmString(),
+            icon = Icons.Default.AccessTime,
+            onClick = { openDialog = true }
+        )
+    }
+}
+
+/* 기본 드롭다운 수정 바 */
+@Composable
+fun BasicDropdownEditBar(
+    name: String,
+    isRequired: Boolean = false,
+    options: List<String>,
+    selected: String,
+    onSelected: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+    ) {
+        Text(
+            text = buildAnnotatedString {
+                append(name)
+                if (isRequired) {
+                    append(" ")
+                    withStyle(style = SpanStyle(color = Color.Red)) {
+                        append("*")
+                    }
+                }
+            },
+            fontSize = CaptionText,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(start = 16.dp, bottom = 6.dp)
+        )
+
+        BasicDropDownField(
+            options = options,
+            selected = selected,
+            onSelected = { onSelected(it) }
+        )
+    }
+}
+
+/* 기본 검색 바 */
+@Composable
+fun BasicSearchBar(
+    name: String,
+    value: String,
+    onClick: () -> Unit = {},
+    isRequired: Boolean = false
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+    ) {
+        Text(
+            text = buildAnnotatedString {
+                append(name)
+                if (isRequired) {
+                    append(" ")
+                    withStyle(style = SpanStyle(color = Color.Red)) {
+                        append("*")
+                    }
+                }
+            },
+            fontSize = CaptionText,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(start = 16.dp, bottom = 6.dp)
+        )
+
+        IconOutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = value,
+            icon = Icons.Default.Search,
+            onClick = { onClick() }
         )
     }
 }
