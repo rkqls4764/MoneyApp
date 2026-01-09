@@ -5,8 +5,10 @@ import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class MoneyRepository(private val moneyDao: MoneyDao) {
+// Repository에는 hilt 사용하면 @Inject constructor 붙여줘야해
+class MoneyRepository @Inject constructor(private val moneyDao: MoneyDao) {
     // ===============================================================
     // 1. 쓰기 작업 (데이터 변경)
     // ===============================================================

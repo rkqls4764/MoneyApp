@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class AppModule {
+class RoomModule {
     // Database
     @Provides
     @Singleton
@@ -32,15 +32,15 @@ class AppModule {
 
     // DAO
     @Provides
-    @Singleton
+//    @Singleton    // DAO는 @Singloton 붙이나 안붙이나 똑같대 삭제해주면 될듯
     fun provideMoneyDao(database: AppDatabase): MoneyDao {
         return database.moneyDao()
     }
 
     // Repository
-    @Provides
-    @Singleton
-    fun provideMoneyRepository(moneyDao: MoneyDao): MoneyRepository {
-        return MoneyRepository(moneyDao)
-    }
+//    @Provides     // 그리고 Repository는 모듈에 추가 안해줘도돼!!
+//    @Singleton
+//    fun provideMoneyRepository(moneyDao: MoneyDao): MoneyRepository {
+//        return MoneyRepository(moneyDao)
+//    }
 }
