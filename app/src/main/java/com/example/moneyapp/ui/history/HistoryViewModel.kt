@@ -1,0 +1,83 @@
+package com.example.moneyapp.ui.history
+
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.moneyapp.data.repository.MoneyRepository
+import com.example.moneyapp.ui.effect.UiEffect
+import com.example.moneyapp.ui.history.add.HistoryAddEvent
+import com.example.moneyapp.ui.history.add.HistoryAddReducer
+import com.example.moneyapp.ui.history.add.HistoryAddState
+import com.example.moneyapp.ui.home.calendar.CalendarReducer
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRepository) : ViewModel() {
+    companion object {
+        private const val TAG = "HistoryViewModel"
+    }
+
+    private val _uiEffect = MutableSharedFlow<UiEffect>(extraBufferCapacity = 1)
+    val uiEffect = _uiEffect.asSharedFlow()
+
+    private val _historyAddState = MutableStateFlow(HistoryAddState())
+    val historyAddState = _historyAddState.asStateFlow()
+
+    fun onAddEvent(e: HistoryAddEvent) {
+        _historyAddState.update { HistoryAddReducer.reduce(it, e) }
+
+        when (e) {
+            HistoryAddEvent.ClickedAdd -> addHistory()
+            else -> Unit
+        }
+    }
+
+    /* 내역 추가 */
+    fun addHistory() {
+        viewModelScope.launch {
+            moneyRepository.insert(
+                transaction = historyAddState.value.inputData
+            )
+
+            _uiEffect.emit(UiEffect.NavigateBack)
+            _uiEffect.emit(UiEffect.ShowToast("내역이 추가되었습니다."))
+
+            Log.d(TAG, "[addHistory] 내역 추가 성공\n${historyAddState.value.inputData}")
+        }
+    }
+
+    /* 내역 수정 */
+    fun updateHistory() {
+        viewModelScope.launch {
+            moneyRepository.update(
+                transaction = historyAddState.value.inputData
+            )
+
+            _uiEffect.emit(UiEffect.NavigateBack)
+            _uiEffect.emit(UiEffect.ShowToast("내역이 수정되었습니다."))
+
+            Log.d(TAG, "[updateHistory] 내역 수정 성공\n${historyAddState.value.inputData}")
+        }
+    }
+
+    /* 내역 삭제 */
+    fun deleteHistory() {
+        viewModelScope.launch {
+            moneyRepository.delete(
+                transaction = historyAddState.value.inputData
+            )
+
+            _uiEffect.emit(UiEffect.NavigateBack)
+            _uiEffect.emit(UiEffect.ShowToast("내역이 삭제되었습니다."))
+
+            Log.d(TAG, "[deleteHistory] 내역 삭제 성공\n${historyAddState.value.inputData}")
+        }
+    }
+}

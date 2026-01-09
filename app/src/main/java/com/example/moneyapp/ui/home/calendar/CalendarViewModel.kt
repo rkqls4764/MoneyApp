@@ -1,6 +1,9 @@
 package com.example.moneyapp.ui.home.calendar
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.moneyapp.data.repository.MoneyRepository
 import com.example.moneyapp.ui.effect.UiEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -8,10 +11,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor() : ViewModel() {
+class CalendarViewModel @Inject constructor(private val moneyRepository: MoneyRepository) : ViewModel() {
     companion object {
         private const val TAG = "CalendarViewModel"
     }
@@ -27,6 +32,20 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
 
         when (e) {
             else -> Unit
+        }
+    }
+
+    /* 한 달 정보 조회 */
+    fun getMonthData(startDate: LocalDate, endDate: LocalDate) {
+        viewModelScope.launch { 
+            moneyRepository.getCalendarData(
+                startDate = startDate,
+                endDate = endDate
+            ).collect { data ->
+
+
+                Log.d(TAG, "[getMonthData] 한 달 정보 조회 성공 (${startDate}~${endDate})\n${data}")
+            }
         }
     }
 }

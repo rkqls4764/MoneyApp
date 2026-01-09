@@ -22,10 +22,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,17 +46,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.moneyapp.data.entity.Category
+import com.example.moneyapp.data.entity.TransactionType
+import com.example.moneyapp.ui.components.BasicBottomSheet
+import com.example.moneyapp.ui.components.BasicButton
 import com.example.moneyapp.ui.components.BasicEditBar
 import com.example.moneyapp.ui.components.BasicNumberEditBar
 import com.example.moneyapp.ui.components.BasicTopBar
+import com.example.moneyapp.ui.components.BasicDateEditBar
+import com.example.moneyapp.ui.components.BasicDropDownField
+import com.example.moneyapp.ui.components.BasicDropdownEditBar
+import com.example.moneyapp.ui.components.BasicSearchBar
+import com.example.moneyapp.ui.components.BasicTimeEditBar
+import com.example.moneyapp.ui.history.HistoryViewModel
 import com.example.moneyapp.ui.theme.BodyText
 import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.ui.theme.MainBlack
 
 /* 내역 추가 화면 */
 @Composable
-fun HistoryAddScreen(navController: NavController) {
+fun HistoryAddScreen(navController: NavController, historyViewModel: HistoryViewModel) {
     val focusManager = LocalFocusManager.current
+
+    val onEvent = historyViewModel::onAddEvent
+    val historyAddState by historyViewModel.historyAddState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -68,73 +85,151 @@ fun HistoryAddScreen(navController: NavController) {
                 .background(color = Color.White)
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
-                .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) }
+                .padding(bottom = 10.dp)
+                .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            HistoryAddCard()
+            HistoryAddCard(
+                historyAddState = historyAddState,
+                onEvent = onEvent
+            )
+
+            BasicButton(
+                name = "추가하기",
+                onClick = { onEvent(HistoryAddEvent.ClickedAdd)}
+            )
         }
     }
 }
 
 /* 내역 추가 카드 */
 @Composable
-fun HistoryAddCard() {
+private fun HistoryAddCard(historyAddState: HistoryAddState, onEvent: (HistoryAddEvent) -> Unit) {
+    var openSheet by remember { mutableStateOf(false) }
+
+    if (openSheet) {
+        BasicBottomSheet(
+            content = {
+                CategoryBottomSheetContent(
+                    categories = historyAddState.categories,
+                    onClick = {
+                        onEvent(HistoryAddEvent.ChangedCategoryWith(it))
+                        openSheet = false
+                    }
+                )
+            },
+            onDismiss = { openSheet = false }
+        )
+    }
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        var type by remember { mutableStateOf(HistoryType.EXPENSE) }
         EditTypeBar(
-            name = "구분",
-            value = type.name,
-            onValueChange = {}
-        )
-
-        // 카테고리 (바텀시트) 임시
-
-        BasicEditBar(
-            name = "이름",
-            value = "",
-            onValueChange = {},
-            isRequired = true
+            value = historyAddState.inputData.type,
+            onValueChange = { onEvent(HistoryAddEvent.ChangedTypeWith(it)) }
         )
 
         BasicNumberEditBar(
             name = "금액",
-            value = "",
-            onValueChange = {},
+            value = historyAddState.inputData.amount.toString(),
+            onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryAddField.AMOUNT, it)) },
             isRequired = true
         )
 
-        // 날짜 시간
+        BasicDateEditBar(
+            name = "날짜",
+            value = historyAddState.inputData.date,
+            onValueChange = { onEvent(HistoryAddEvent.ChangedDateWith(it)) },
+            isRequired = true
+        )
+
+        BasicTimeEditBar(
+            name = "시간",
+            value = historyAddState.inputData.date,
+            onValueChange = { onEvent(HistoryAddEvent.ChangedDateWith(it)) },
+            isRequired = true
+        )
+
+        BasicSearchBar(
+            name = "카테고리",
+            value = historyAddState.selectedCategoryName,
+            onClick = { openSheet = true }
+        )
+
+        BasicEditBar(
+            name = "이름",
+            value = historyAddState.inputData.description,
+            onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryAddField.NAME, it)) }
+        )
 
         BasicEditBar(
             name = "메모",
-            value = "",
-            onValueChange = {},
-            isRequired = false
+            value = historyAddState.inputData.memo,
+            onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryAddField.MEMO, it)) }
         )
-
     }
 }
 
-enum class HistoryType {
-    EXPENSE, INCOME
+/* 카테고리 선택 바텀 시트 내용 */
+@Composable
+private fun CategoryBottomSheetContent(
+    categories: List<Category>,
+    onClick: (Category) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(categories) { category ->
+            CategoryItem(
+                categoryInfo = category,
+                onClick = { onClick(category) }
+            )
+        }
+    }
+}
+
+/* 카테고리 목록 아이템 */
+@Composable
+private fun CategoryItem(
+    categoryInfo: Category,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(width = 1.dp, color = MainBlack, shape = RoundedCornerShape(percent = 20)),
+        onClick = onClick
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color.White)
+                .padding(horizontal = 24.dp, vertical = 12.dp)
+        ) {
+            Text(
+                text = categoryInfo.name,
+                fontSize = BodyText
+            )
+        }
+    }
 }
 
 /* 내역 종류 수정 바 */
 @Composable
 private fun EditTypeBar(
-    name: String,
-    value: String,
-    onValueChange: (String) -> Unit = {}
+    value: TransactionType,
+    onValueChange: (TransactionType) -> Unit = {}
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
     ) {
         Text(
             text = buildAnnotatedString {
-                append(name)
-                append(" ")
+                append("구분 ")
                 withStyle(style = SpanStyle(color = Color.Red)) {
                     append("*")
                 }
@@ -145,7 +240,8 @@ private fun EditTypeBar(
         )
 
         TypeSelectorItem(
-            onSelected = {}
+            selected = value,
+            onSelected = { onValueChange(it) }
         )
     }
 }
@@ -153,12 +249,11 @@ private fun EditTypeBar(
 /* 내역 종류 선택 아이템 */
 @Composable
 private fun TypeSelectorItem(
-    modifier: Modifier = Modifier,
-    selected: HistoryType = HistoryType.EXPENSE,
-    onSelected: (HistoryType) -> Unit
+    selected: TransactionType,
+    onSelected: (TransactionType) -> Unit
 ) {
     BoxWithConstraints(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
             .border(width = 1.dp, color = MainBlack, shape = RoundedCornerShape(percent = 50))
@@ -167,7 +262,7 @@ private fun TypeSelectorItem(
 
         // 배경색 서서히 바꾸기
         val indicatorX by animateDpAsState(
-            targetValue = if (selected == HistoryType.EXPENSE) 0.dp else halfWidth,
+            targetValue = if (selected == TransactionType.EXPENSE) 0.dp else halfWidth,
             animationSpec = tween(durationMillis = 220, easing = FastOutSlowInEasing),
             label = "indicatorX"
         )
@@ -186,13 +281,13 @@ private fun TypeSelectorItem(
         Row(Modifier.fillMaxSize()) {
             SelectorItem(
                 text = "지출",
-                selected = selected == HistoryType.EXPENSE,
-                onClick = { onSelected(HistoryType.EXPENSE) }
+                selected = selected == TransactionType.EXPENSE,
+                onClick = { onSelected(TransactionType.EXPENSE) }
             )
             SelectorItem(
                 text = "수입",
-                selected = selected == HistoryType.INCOME,
-                onClick = { onSelected(HistoryType.INCOME) }
+                selected = selected == TransactionType.INCOME,
+                onClick = { onSelected(TransactionType.INCOME) }
             )
         }
     }
