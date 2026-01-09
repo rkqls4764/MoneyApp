@@ -41,10 +41,10 @@ class MoneyRepository @Inject constructor(private val moneyDao: MoneyDao) {
         startDate: Long?,
         endDate: Long?,
         type: TransactionType?,
-        category: Category?,
+        // category: Category?,
         keyword: String?
     ): Flow<List<MoneyTransaction>> {
-        return moneyDao.searchTransactions(startDate, endDate, type, category, keyword)
+        return moneyDao.searchTransactions(startDate, endDate, type, keyword)
     }
 
     // 통계용

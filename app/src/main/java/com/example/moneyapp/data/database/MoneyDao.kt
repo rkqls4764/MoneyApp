@@ -61,7 +61,7 @@ interface MoneyDao {
         startDate: Long?,
         endDate: Long?,
         type: TransactionType?,
-        category: Category?,
+        // category: Category?,
         keyword: String?
     ): Flow<List<MoneyTransaction>>
 
