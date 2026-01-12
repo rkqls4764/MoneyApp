@@ -1,17 +1,25 @@
-package com.example.moneyapp.ui.history.add
+package com.example.moneyapp.ui.history.edit
 
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
+import com.example.moneyapp.ui.history.add.HistoryField
 import java.time.LocalDateTime
 
-object HistoryAddReducer {
-    fun reduce(s: HistoryAddState, e: HistoryAddEvent): HistoryAddState = when (e) {
-        is HistoryAddEvent.ChangedValueWith -> handleChangedValue(s, e.field, e.value)
-        is HistoryAddEvent.ChangedTypeWith -> handleChangedType(s, e.type)
-        is HistoryAddEvent.ChangedDateWith -> handleChangedDate(s, e.date)
-        is HistoryAddEvent.ChangedCategoryWith -> handleChangedCategory(s, e.category)
+object HistoryEditReducer {
+    fun reduce(s: HistoryEditState, e: HistoryEditEvent): HistoryEditState = when (e) {
+        is HistoryEditEvent.InitWith -> handleInit(e.data)
+        is HistoryEditEvent.ChangedValueWith -> handleChangedValue(s, e.field, e.value)
+        is HistoryEditEvent.ChangedTypeWith -> handleChangedType(s, e.type)
+        is HistoryEditEvent.ChangedDateWith -> handleChangedDate(s, e.date)
+        is HistoryEditEvent.ChangedCategoryWith -> handleChangedCategory(s, e.category)
         else -> s
+    }
+
+    private fun handleInit(
+        data: MoneyTransaction
+    ): HistoryEditState {
+        return HistoryEditState(inputData = data)
     }
 
     private val historyUpdaters: Map<HistoryField, (MoneyTransaction, String) -> MoneyTransaction> =
@@ -22,32 +30,32 @@ object HistoryAddReducer {
         )
 
     private fun handleChangedValue(
-        state: HistoryAddState,
+        state: HistoryEditState,
         field: HistoryField,
         value: String
-    ): HistoryAddState {
+    ): HistoryEditState {
         val updater = historyUpdaters[field] ?: return state
         return state.copy(inputData = updater(state.inputData, value))
     }
 
     private fun handleChangedType(
-        state: HistoryAddState,
+        state: HistoryEditState,
         type: TransactionType
-    ): HistoryAddState {
+    ): HistoryEditState {
         return state.copy(inputData = state.inputData.copy(type = type))
     }
 
     private fun handleChangedDate(
-        state: HistoryAddState,
+        state: HistoryEditState,
         date: LocalDateTime
-    ): HistoryAddState {
+    ): HistoryEditState {
         return state.copy(inputData = state.inputData.copy(date = date))
     }
 
     private fun handleChangedCategory(
-        state: HistoryAddState,
+        state: HistoryEditState,
         category: Category
-    ): HistoryAddState {
+    ): HistoryEditState {
         return state.copy(inputData = state.inputData.copy(categoryId = category.id), selectedCategoryName = category.name)
     }
 }

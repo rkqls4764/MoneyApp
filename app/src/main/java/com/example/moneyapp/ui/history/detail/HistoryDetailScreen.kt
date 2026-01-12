@@ -26,6 +26,7 @@ import com.example.moneyapp.ui.components.BasicDialog
 import com.example.moneyapp.ui.components.BasicInfoBar
 import com.example.moneyapp.ui.components.DeleteIconTopBar
 import com.example.moneyapp.ui.history.HistoryViewModel
+import com.example.moneyapp.ui.history.edit.HistoryEditEvent
 import com.example.moneyapp.ui.theme.MainBlack
 import com.example.moneyapp.util.toHmString
 import com.example.moneyapp.util.toYmdeString
@@ -73,7 +74,10 @@ fun HistoryDetailScreen(historyViewModel: HistoryViewModel) {
 
             BasicButton(
                 name = "수정하기",
-                onClick = { onEvent(HistoryDetailEvent.ClickedEdit) }
+                onClick = {
+                    historyViewModel.onEditEvent(HistoryEditEvent.InitWith(data = historyDetailState.historyInfo))
+                    onEvent(HistoryDetailEvent.ClickedEdit)
+                }
             )
         }
     }
