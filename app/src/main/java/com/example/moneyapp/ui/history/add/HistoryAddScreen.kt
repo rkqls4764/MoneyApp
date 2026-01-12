@@ -165,7 +165,7 @@ private fun HistoryAddContent(historyAddState: HistoryAddState, onEvent: (Histor
 
         BasicEditBar(
             name = "메모",
-            value = historyAddState.inputData.memo,
+            value = historyAddState.inputData.memo ?: "",
             onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryAddField.MEMO, it)) }
         )
     }

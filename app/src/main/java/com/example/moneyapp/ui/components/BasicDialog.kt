@@ -91,13 +91,18 @@ fun BasicDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicDatePickerDialog(
-    initialDate: Date? = null,
+    initialDate: LocalDateTime? = null,
     onDismiss: () -> Unit,
-    onConfirm: (Date) -> Unit
+    onConfirm: (LocalDateTime) -> Unit
 ) {
+    val zone = ZoneId.systemDefault()
+
     // 다이얼로그 처음 열릴 때 선택해 둘 날짜 millis
     val initialMillis = remember(initialDate) {
-        initialDate?.time
+        initialDate
+            ?.atZone(zone)
+            ?.toInstant()
+            ?.toEpochMilli()
     }
 
     val datePickerState = rememberDatePickerState(
@@ -109,28 +114,20 @@ fun BasicDatePickerDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    val millis = datePickerState.selectedDateMillis ?: return@TextButton
+                    val millis = datePickerState.selectedDateMillis
+                        ?: return@TextButton
 
                     val selectedDate = Instant.ofEpochMilli(millis)
-                        .atZone(ZoneId.systemDefault())
+                        .atZone(zone)
                         .toLocalDate()
 
-                    // 기존 값이 있으면 날짜만 바꾸고 시간은 유지
-                    val resultMillis = run {
-                        val zone = ZoneId.systemDefault()
-                        val oldTime = initialDate?.let {
-                            Instant.ofEpochMilli(it.time)
-                                .atZone(zone)
-                                .toLocalTime()
-                        } ?: LocalTime.MIDNIGHT
+                    // 기존 시간이 있으면 유지, 없으면 00:00
+                    val resultDateTime = LocalDateTime.of(
+                        selectedDate,
+                        initialDate?.toLocalTime() ?: LocalTime.MIDNIGHT
+                    )
 
-                        LocalDateTime.of(selectedDate, oldTime)
-                            .atZone(zone)
-                            .toInstant()
-                            .toEpochMilli()
-                    }
-
-                    onConfirm(Date(resultMillis))
+                    onConfirm(resultDateTime)
                     onDismiss()
                 }
             ) {
@@ -172,18 +169,13 @@ fun BasicDatePickerDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicTimePickerDialog(
-    initialDate: Date? = null,
+    initialDate: LocalDateTime? = null,
     onDismiss: () -> Unit,
-    onConfirm: (Date) -> Unit
+    onConfirm: (LocalDateTime) -> Unit
 ) {
-    val zone = remember { ZoneId.systemDefault() }
-
     // initialDate가 있으면 그 값, 없으면 현재
     val baseDateTime = remember(initialDate) {
-        (initialDate?.time ?: System.currentTimeMillis())
-            .let { millis ->
-                Instant.ofEpochMilli(millis).atZone(zone).toLocalDateTime()
-            }
+        initialDate ?: LocalDateTime.now()
     }
 
     val timePickerState = rememberTimePickerState(
@@ -203,12 +195,7 @@ fun BasicTimePickerDialog(
                         LocalTime.of(timePickerState.hour, timePickerState.minute)
                     )
 
-                    val resultMillis = newDateTime
-                        .atZone(zone)
-                        .toInstant()
-                        .toEpochMilli()
-
-                    onConfirm(Date(resultMillis))
+                    onConfirm(newDateTime)
                     onDismiss()
                 }
             ) {

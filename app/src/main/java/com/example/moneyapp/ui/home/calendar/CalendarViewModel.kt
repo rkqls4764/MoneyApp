@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,7 +38,7 @@ class CalendarViewModel @Inject constructor(private val moneyRepository: MoneyRe
     }
 
     /* 한 달 정보 조회 */
-    fun getMonthData(startDate: LocalDate, endDate: LocalDate) {
+    fun getMonthData(startDate: LocalDateTime, endDate: LocalDateTime) {
         viewModelScope.launch { 
             moneyRepository.getCalendarData(
                 startDate = startDate,

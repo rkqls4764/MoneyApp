@@ -1,26 +1,21 @@
 package com.example.moneyapp.util
 
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
+import java.util.Locale
 
-/* Date -> String (yyyy-MM-dd (E)) */
-fun Date.toYmdeString(): String {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd (E)")
-    return Instant.ofEpochMilli(this.time)
-        .atZone(ZoneId.systemDefault())
-        .toLocalDate()
-        .format(formatter)
+/* LocalDateTime -> String (yyyy-MM-dd (E)) */
+fun LocalDateTime.toYmdeString(): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd (E)", Locale.KOREAN)
+    return this.format(formatter)
 }
 
-/* Date -> String (HH:mm) */
-fun Date.toHmString(): String {
+/* LocalDateTime -> String (HH:mm) */
+fun LocalDateTime.toHmString(): String {
     val formatter = DateTimeFormatter.ofPattern("HH:mm")
-    return Instant.ofEpochMilli(this.time)
-        .atZone(ZoneId.systemDefault())
-        .toLocalTime()
-        .format(formatter)
+    return this.format(formatter)
 }
 
 /* 숫자 천 단위마다 콤마 구분 */

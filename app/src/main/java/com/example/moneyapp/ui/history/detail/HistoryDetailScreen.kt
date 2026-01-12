@@ -122,7 +122,7 @@ private fun HistoryDetailContent(historyInfo: MoneyTransaction) {
 
         BasicInfoBar(
             name = "메모",
-            value = historyInfo.memo
+            value = historyInfo.memo ?: "없음"
         )
     }
 }
