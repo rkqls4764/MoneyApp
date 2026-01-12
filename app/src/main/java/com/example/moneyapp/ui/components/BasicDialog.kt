@@ -16,14 +16,76 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.moneyapp.ui.theme.BodyText
+import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.ui.theme.MainBlack
 import com.example.moneyapp.ui.theme.MainBlue
+import com.example.moneyapp.ui.theme.MainRed
 import com.example.moneyapp.ui.theme.MainYellow
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.util.Date
+
+/* 기본 디알로그 */
+@Composable
+fun BasicDialog(
+    title: String,
+    content: String = "",
+    onDismiss: () -> Unit,
+    onClickConfirm: () -> Unit,
+) {
+    AlertDialog(
+        title = {
+            Text(
+                text = title,
+                fontSize = BodyText,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            if (content.isNotBlank()) {
+                Text(
+                    text = content,
+                    fontSize = CaptionText
+                )
+            }
+        },
+        onDismissRequest = {
+            onDismiss()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onClickConfirm()
+                    onDismiss()
+                }
+            ) {
+                Text(
+                    text = "확인",
+                    fontSize = BodyText,
+                    fontWeight = FontWeight.Bold,
+                    color = MainRed
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismiss()
+                }
+            ) {
+                Text(
+                    text = "취소",
+                    fontSize = BodyText,
+                    color = MainBlue
+                )
+            }
+        },
+        containerColor = Color.White
+    )
+}
 
 /* 날짜 선택 디알로그 */
 @OptIn(ExperimentalMaterial3Api::class)

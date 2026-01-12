@@ -22,4 +22,9 @@ sealed interface CalendarEvent {
 
     /* 이전 일 이동 버튼 클릭 이벤트 */
     data object ClickedMovePrevDay: CalendarEvent
+
+    /* 내역 아이템 클릭 이벤트 */
+    data class ClickedHistory(
+        val id: String
+    ): CalendarEvent
 }

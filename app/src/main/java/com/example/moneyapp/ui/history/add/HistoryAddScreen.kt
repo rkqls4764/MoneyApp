@@ -54,18 +54,17 @@ import com.example.moneyapp.ui.components.BasicEditBar
 import com.example.moneyapp.ui.components.BasicNumberEditBar
 import com.example.moneyapp.ui.components.BasicTopBar
 import com.example.moneyapp.ui.components.BasicDateEditBar
-import com.example.moneyapp.ui.components.BasicDropDownField
-import com.example.moneyapp.ui.components.BasicDropdownEditBar
-import com.example.moneyapp.ui.components.BasicSearchBar
+import com.example.moneyapp.ui.components.BasicSearchEditBar
 import com.example.moneyapp.ui.components.BasicTimeEditBar
 import com.example.moneyapp.ui.history.HistoryViewModel
 import com.example.moneyapp.ui.theme.BodyText
 import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.ui.theme.MainBlack
+import com.example.moneyapp.util.formatMoney
 
 /* 내역 추가 화면 */
 @Composable
-fun HistoryAddScreen(navController: NavController, historyViewModel: HistoryViewModel) {
+fun HistoryAddScreen(historyViewModel: HistoryViewModel) {
     val focusManager = LocalFocusManager.current
 
     val onEvent = historyViewModel::onAddEvent
@@ -75,7 +74,7 @@ fun HistoryAddScreen(navController: NavController, historyViewModel: HistoryView
         topBar = {
             BasicTopBar(
                 title = "내역 추가",
-                onClickNavIcon = { navController.popBackStack() }
+                onClickNavIcon = { onEvent(HistoryAddEvent.ClickedBack) }
             )
         }
     ) { paddingValues ->
@@ -89,7 +88,7 @@ fun HistoryAddScreen(navController: NavController, historyViewModel: HistoryView
                 .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            HistoryAddCard(
+            HistoryAddContent(
                 historyAddState = historyAddState,
                 onEvent = onEvent
             )
@@ -102,9 +101,9 @@ fun HistoryAddScreen(navController: NavController, historyViewModel: HistoryView
     }
 }
 
-/* 내역 추가 카드 */
+/* 내역 추가 내용 */
 @Composable
-private fun HistoryAddCard(historyAddState: HistoryAddState, onEvent: (HistoryAddEvent) -> Unit) {
+private fun HistoryAddContent(historyAddState: HistoryAddState, onEvent: (HistoryAddEvent) -> Unit) {
     var openSheet by remember { mutableStateOf(false) }
 
     if (openSheet) {
@@ -152,7 +151,7 @@ private fun HistoryAddCard(historyAddState: HistoryAddState, onEvent: (HistoryAd
             isRequired = true
         )
 
-        BasicSearchBar(
+        BasicSearchEditBar(
             name = "카테고리",
             value = historyAddState.selectedCategoryName,
             onClick = { openSheet = true }
@@ -256,7 +255,7 @@ private fun TypeSelectorItem(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .border(width = 1.dp, color = MainBlack, shape = RoundedCornerShape(percent = 50))
+            .border(width = 1.dp, color = MainBlack.copy(alpha = 0.5f), shape = RoundedCornerShape(percent = 50))
     ) {
         val halfWidth = maxWidth / 2
 
