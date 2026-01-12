@@ -56,6 +56,7 @@ import com.example.moneyapp.ui.theme.MainBlue
 import com.example.moneyapp.ui.theme.MainRed
 import com.example.moneyapp.ui.theme.TitleText
 import com.example.moneyapp.ui.theme.TodayBlockColor
+import com.example.moneyapp.util.formatMoney
 import com.example.moneyapp.util.isEmptyList
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -107,7 +108,7 @@ private fun HistoriesBottomSheet(histories: List<String>, date: LocalDate, onEve
             )
 
             DailySummaryBar(
-                total = Int.MAX_VALUE,
+                total = Long.MAX_VALUE,
                 income = 65000,
                 expense = 15000
             )
@@ -125,8 +126,13 @@ private fun HistoriesBottomSheet(histories: List<String>, date: LocalDate, onEve
                 }
 
                 items(histories) { history ->
-
-                    HistoryItem(history, onEvent)
+                    HistoryItem(
+                        history = history,
+                        onClick = {
+                            onEvent(CalendarEvent.CloseSheet)
+                            onEvent(CalendarEvent.ClickedHistory(history))
+                        }
+                    )
                 }
             }
         }
@@ -135,10 +141,11 @@ private fun HistoriesBottomSheet(histories: List<String>, date: LocalDate, onEve
 
 /* 내역 목록 아이템 */
 @Composable
-private fun HistoryItem(history: String, onEvent: (CalendarEvent) -> Unit) {
+private fun HistoryItem(history: String, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = { /* TODO: 내역 목록 아이템 클릭 이벤트 - 내역 상세 조회 화면으로 이동 */ }),
-        border = BorderStroke(width = 0.5.dp, color = Color.LightGray)
+        modifier = Modifier.fillMaxWidth(),
+        border = BorderStroke(width = 0.5.dp, color = Color.LightGray),
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().background(color = Color.White).padding(vertical = 14.dp, horizontal = 24.dp),
@@ -199,7 +206,7 @@ private fun DayBar(date: LocalDate, onEvent: (CalendarEvent) -> Unit) {
 
 /* 일 요약 바 */
 @Composable
-private fun DailySummaryBar(total: Int, income: Int, expense: Int) {
+private fun DailySummaryBar(total: Long, income: Long, expense: Long) {
     Row(
         modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min).padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -236,7 +243,7 @@ private fun DailySummaryBar(total: Int, income: Int, expense: Int) {
 
 /* 월 요약 바 */
 @Composable
-private fun MonthlySummaryBar(total: Int, income: Int, expense: Int) {
+private fun MonthlySummaryBar(total: Long, income: Long, expense: Long) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -277,7 +284,7 @@ private fun MonthlySummaryBar(total: Int, income: Int, expense: Int) {
 
 /* 요약 바 아이템 */
 @Composable
-private fun RowScope.SummaryItem(name: String, price: Int, color: Color) {
+private fun RowScope.SummaryItem(name: String, price: Long, color: Color) {
     Box(
         modifier = Modifier.weight(1f)
     ) {
@@ -293,8 +300,8 @@ private fun RowScope.SummaryItem(name: String, price: Int, color: Color) {
             )
 
             Text(
-                text = String.format("%,d", price),
-                fontSize = CaptionText,
+                text = formatMoney(price),
+                fontSize = if (formatMoney(price).length > 15) CalendarText else CaptionText,
                 color = color,
                 maxLines = 1,
                 modifier = Modifier.horizontalScroll(state = rememberScrollState()) // 길이가 길면 좌우 스크롤
@@ -323,9 +330,9 @@ private fun Calendar(yearMonth: YearMonth, onEvent: (CalendarEvent) -> Unit) {
             Spacer(modifier = Modifier.height(6.dp))
 
             MonthlySummaryBar(
-                total = Int.MAX_VALUE,
-                income = 65000,
-                expense = 15000
+                total = 1010101010101,
+                income = 10500,
+                expense = 0
             )
 
             Spacer(modifier = Modifier.height(6.dp))

@@ -90,7 +90,7 @@ fun IconOutlinedTextField(
 fun BasicOutlinedTextFieldColors() = OutlinedTextFieldDefaults.colors(
     unfocusedContainerColor = Color.White,
     focusedContainerColor = Color.White,
-    unfocusedBorderColor = MainBlack,
-    focusedBorderColor = MainBlack,
-    cursorColor = MainBlack
+    unfocusedBorderColor = MainBlack.copy(alpha = 0.5f),
+    focusedBorderColor = MainBlack.copy(alpha = 0.5f),
+    cursorColor = MainBlack.copy(alpha = 0.5f)
 )
