@@ -46,7 +46,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.moneyapp.data.entity.TransactionWithCategory
+import com.example.moneyapp.ui.components.EmptyState
 import com.example.moneyapp.ui.theme.BodyText
 import com.example.moneyapp.ui.theme.CalendarText
 import com.example.moneyapp.ui.theme.CaptionText
@@ -56,8 +59,6 @@ import com.example.moneyapp.ui.theme.MainBlue
 import com.example.moneyapp.ui.theme.MainRed
 import com.example.moneyapp.ui.theme.TitleText
 import com.example.moneyapp.ui.theme.TodayBlockColor
-import com.example.moneyapp.util.formatMoney
-import com.example.moneyapp.util.isEmptyList
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -71,7 +72,8 @@ fun CalendarScreen(calendarViewModel: CalendarViewModel) {
 
     if (calendarState.openSheet) {
         HistoriesBottomSheet(
-            histories = listOf("d", "sdfsdfggsgsd", "sdfsdfggsgsd", "sdfsdfggsgsd","sdfsdfggsgsd" ,"sdfsdfggsgsd" ,"sdfsdfggsgsd","sdfsdfggsgsd","sdfsdfggsgsd", "d", "sdfsdfggsgsd", "sdfsdfggsgsd", "sdfsdfggsgsd","sdfsdfggsgsd" ,"sdfsdfggsgsd" ,"sdfsdfggsgsd"),
+            histories = calendarState.dailyHistories[calendarState.selectedDate],
+            summary = calendarState.dailySummaries[calendarState.selectedDate],
             date = calendarState.selectedDate,
             onEvent = onEvent
         )
@@ -81,7 +83,7 @@ fun CalendarScreen(calendarViewModel: CalendarViewModel) {
         modifier = Modifier.padding(bottom = 80.dp)
     ) {
         Calendar(
-            yearMonth = calendarState.yearMonth,
+            calendarState = calendarState,
             onEvent = onEvent
         )
     }
@@ -90,7 +92,7 @@ fun CalendarScreen(calendarViewModel: CalendarViewModel) {
 /* 내역 목록 바텀 시트 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HistoriesBottomSheet(histories: List<String>, date: LocalDate, onEvent: (CalendarEvent) -> Unit) {
+private fun HistoriesBottomSheet(histories: List<TransactionWithCategory>?, summary: AmountSummary?, date: LocalDate, onEvent: (CalendarEvent) -> Unit) {
     val sheetState = rememberModalBottomSheetState()
 
     ModalBottomSheet(
@@ -108,9 +110,9 @@ private fun HistoriesBottomSheet(histories: List<String>, date: LocalDate, onEve
             )
 
             DailySummaryBar(
-                total = Long.MAX_VALUE,
-                income = 65000,
-                expense = 15000
+                total = summary?.total ?: 0,
+                income = summary?.income ?: 0,
+                expense = summary?.expense ?: 0
             )
 
             LazyColumn(
@@ -118,21 +120,19 @@ private fun HistoriesBottomSheet(histories: List<String>, date: LocalDate, onEve
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                item {
-                    isEmptyList(
-                        list = histories,
-                        text = "등록된 내역이 없습니다"
-                    )
-                }
-
-                items(histories) { history ->
-                    HistoryItem(
-                        history = history,
-                        onClick = {
-                            onEvent(CalendarEvent.CloseSheet)
-                            onEvent(CalendarEvent.ClickedHistory(history))
-                        }
-                    )
+                if (histories.isNullOrEmpty()) {
+                    item {
+                        EmptyState(
+                            text = "등록된 내역이 없습니다"
+                        )
+                    }
+                } else {
+                    items(histories) { history ->
+                        HistoryItem(
+                            history = history,
+                            onEvent = onEvent
+                        )
+                    }
                 }
             }
         }
@@ -141,7 +141,7 @@ private fun HistoriesBottomSheet(histories: List<String>, date: LocalDate, onEve
 
 /* 내역 목록 아이템 */
 @Composable
-private fun HistoryItem(history: String, onClick: () -> Unit) {
+private fun HistoryItem(history: TransactionWithCategory, onEvent: (CalendarEvent) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         border = BorderStroke(width = 0.5.dp, color = Color.LightGray),
@@ -153,13 +153,13 @@ private fun HistoryItem(history: String, onClick: () -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "제목",
+                text = history.transaction.description,
                 color = MainBlack,
                 fontSize = BodyText
             )
 
             Text(
-                text = "금액",
+                text = history.transaction.amount.toString(),
                 color = MainBlue,
                 fontSize = BodyText,
                 fontWeight = FontWeight.SemiBold
@@ -312,9 +312,9 @@ private fun RowScope.SummaryItem(name: String, price: Long, color: Color) {
 
 /* 캘린더 */
 @Composable
-private fun Calendar(yearMonth: YearMonth, onEvent: (CalendarEvent) -> Unit) {
+private fun Calendar(calendarState: CalendarState, onEvent: (CalendarEvent) -> Unit) {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM")
-    val ymStr = remember(yearMonth) { yearMonth.format(formatter) }
+    val ymStr = remember(calendarState.yearMonth) { calendarState.yearMonth.format(formatter) }
 
     Card(
         colors = (CardDefaults.cardColors(containerColor = Color.White)),
@@ -330,9 +330,9 @@ private fun Calendar(yearMonth: YearMonth, onEvent: (CalendarEvent) -> Unit) {
             Spacer(modifier = Modifier.height(6.dp))
 
             MonthlySummaryBar(
-                total = 1010101010101,
-                income = 10500,
-                expense = 0
+                total = calendarState.monthSummary.total,
+                income = calendarState.monthSummary.income,
+                expense = calendarState.monthSummary.expense
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -341,7 +341,7 @@ private fun Calendar(yearMonth: YearMonth, onEvent: (CalendarEvent) -> Unit) {
 
             Month(
                 modifier = Modifier.weight(1f),
-                yearMonth = yearMonth,
+                calendarState = calendarState,
                 onEvent = onEvent
             )
         }
@@ -427,10 +427,10 @@ private fun WeekBar() {
 
 /* 한 달 출력 */
 @Composable
-private fun Month(modifier: Modifier, yearMonth: YearMonth, onEvent: (CalendarEvent) -> Unit) {
-    val firstDayOfWeek = yearMonth.atDay(1).dayOfWeek   // 해당 월에서 1일의 요일
+private fun Month(modifier: Modifier, calendarState: CalendarState, onEvent: (CalendarEvent) -> Unit) {
+    val firstDayOfWeek = calendarState.yearMonth.atDay(1).dayOfWeek   // 해당 월에서 1일의 요일
     val offset = firstDayOfWeek.value % 7       // 해당 월에서 1일의 요일 인덱스화 (일=0, 월=1, ..., 토=6)
-    val lastDate = yearMonth.lengthOfMonth()    // 해당 월의 총 일수
+    val lastDate = calendarState.yearMonth.lengthOfMonth()    // 해당 월의 총 일수
     val weeks = ((offset + lastDate + 6) / 7)   // 주수
     var date = 1 - offset
 
@@ -450,10 +450,14 @@ private fun Month(modifier: Modifier, yearMonth: YearMonth, onEvent: (CalendarEv
                     if (date < 1 || date > lastDate) {
                         EmptyDayBlock()
                     } else {
-                        val currentDate = yearMonth.atDay(date)
+                        val currentDate = calendarState.yearMonth.atDay(date)
                         val isToday = currentDate == LocalDate.now()
 
-                        DayBlock(currentDate, isToday, onEvent)
+                        DayBlock(
+                            date = currentDate,
+                            isToday = isToday,
+                            summary = calendarState.dailySummaries[currentDate],
+                            onEvent = onEvent)
                     }
                     date++
 
@@ -483,7 +487,7 @@ private fun RowScope.EmptyDayBlock() {
 
 /* 날짜 블럭 */
 @Composable
-private fun RowScope.DayBlock(date: LocalDate, isToday: Boolean, onEvent: (CalendarEvent) -> Unit) {
+private fun RowScope.DayBlock(date: LocalDate, isToday: Boolean, summary: AmountSummary?, onEvent: (CalendarEvent) -> Unit) {
     Box(
         modifier = Modifier
             .weight(1f)
@@ -496,10 +500,10 @@ private fun RowScope.DayBlock(date: LocalDate, isToday: Boolean, onEvent: (Calen
         contentAlignment = Alignment.TopEnd
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 3.dp)
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(top = 5.dp, end = 3.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = 5.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Text(
@@ -508,6 +512,30 @@ private fun RowScope.DayBlock(date: LocalDate, isToday: Boolean, onEvent: (Calen
                     color = if (date.dayOfWeek == DayOfWeek.SATURDAY || date.dayOfWeek == DayOfWeek.SUNDAY) MainRed else MainBlack
                 )
             }
+
+            Text(
+                text = "${summary?.income ?: 0}",
+                fontSize = CalendarText,
+                color = MainBlue,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Text(
+                text = "${summary?.expense ?: 0}",
+                fontSize = CalendarText,
+                color = MainRed,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Text(
+                text = "${summary?.total ?: 0}",
+                fontSize = CalendarText,
+                color = MainBlack,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

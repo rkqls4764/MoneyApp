@@ -3,6 +3,7 @@ package com.example.moneyapp.ui.history.add
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
+import java.time.LocalDateTime
 import java.util.Date
 
 object HistoryAddReducer {
@@ -39,7 +40,7 @@ object HistoryAddReducer {
 
     private fun handleChangedDate(
         state: HistoryAddState,
-        date: Date
+        date: LocalDateTime
     ): HistoryAddState {
         return state.copy(inputData = state.inputData.copy(date = date))
     }

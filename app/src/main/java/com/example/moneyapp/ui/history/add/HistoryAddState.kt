@@ -3,6 +3,7 @@ package com.example.moneyapp.ui.history.add
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
+import java.time.LocalDateTime
 import java.util.Date
 
 data class HistoryAddState(
@@ -12,7 +13,7 @@ data class HistoryAddState(
         memo = "",
         type = TransactionType.EXPENSE,
         categoryId = null,
-        date = Date()
+        date = LocalDateTime.now()
     ),
     val categories: List<Category> = listOf(
         Category(

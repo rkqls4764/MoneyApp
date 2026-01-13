@@ -23,18 +23,3 @@ fun rememberOnce(action: () -> Unit): () -> Unit {
         }
     }
 }
-
-/* 빈 리스트인지 검사 */
-@Composable
-fun isEmptyList(list: List<Any>, text: String) {
-    if (list.isEmpty()) {
-        Box(
-            modifier = Modifier.padding(top = 100.dp)
-        ) {
-            Text(
-                text = text,
-                fontSize = 14.sp
-            )
-        }
-    }
-}
