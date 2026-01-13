@@ -2,6 +2,7 @@ package com.example.moneyapp.ui.history.add
 
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.TransactionType
+import java.time.LocalDateTime
 import java.util.Date
 
 enum class HistoryAddField {
@@ -22,7 +23,7 @@ sealed interface HistoryAddEvent {
 
     // 날짜, 시간 값 변경 이벤트
     data class ChangedDateWith(
-        val date: Date
+        val date: LocalDateTime
     ): HistoryAddEvent
 
     // 카테고리 값 변경 이벤트
