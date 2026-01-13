@@ -2,7 +2,7 @@ package com.example.moneyapp.ui.history.detail
 
 import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
-import java.util.Date
+import java.time.LocalDateTime
 
 data class HistoryDetailState(
     val historyInfo: MoneyTransaction = MoneyTransaction(
@@ -11,6 +11,6 @@ data class HistoryDetailState(
         memo = "택시를 탔음",
         type = TransactionType.EXPENSE,
         categoryId = null,
-        date = Date()
+        date = LocalDateTime.now()
     )
 )

@@ -10,6 +10,9 @@ import com.example.moneyapp.ui.history.add.HistoryAddReducer
 import com.example.moneyapp.ui.history.add.HistoryAddState
 import com.example.moneyapp.ui.history.detail.HistoryDetailEvent
 import com.example.moneyapp.ui.history.detail.HistoryDetailState
+import com.example.moneyapp.ui.history.edit.HistoryEditEvent
+import com.example.moneyapp.ui.history.edit.HistoryEditReducer
+import com.example.moneyapp.ui.history.edit.HistoryEditState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +35,8 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
     val historyAddState = _historyAddState.asStateFlow()
     private val _historyDetailState = MutableStateFlow(HistoryDetailState())
     val historyDetailState = _historyDetailState.asStateFlow()
+    private val _historyEditState = MutableStateFlow(HistoryEditState())
+    val historyEditState = _historyEditState.asStateFlow()
 
     fun onAddEvent(e: HistoryAddEvent) {
         _historyAddState.update { HistoryAddReducer.reduce(it, e) }
@@ -46,8 +51,18 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
     fun onDetailEvent(e: HistoryDetailEvent) {
         when (e) {
             HistoryDetailEvent.ClickedBack -> _uiEffect.tryEmit(UiEffect.NavigateBack)
-            HistoryDetailEvent.ClickedEdit -> _uiEffect.tryEmit(UiEffect.Navigate("editHistory"))
+            HistoryDetailEvent.ClickedEdit -> _uiEffect.tryEmit(UiEffect.Navigate("historyEdit"))
             HistoryDetailEvent.ClickedDelete -> deleteHistory()
+            else -> Unit
+        }
+    }
+
+    fun onEditEvent(e: HistoryEditEvent) {
+        _historyEditState.update { HistoryEditReducer.reduce(it, e) }
+
+        when (e) {
+            HistoryEditEvent.ClickedBack -> _uiEffect.tryEmit(UiEffect.NavigateBack)
+            HistoryEditEvent.ClickedUpdate -> updateHistory()
             else -> Unit
         }
     }

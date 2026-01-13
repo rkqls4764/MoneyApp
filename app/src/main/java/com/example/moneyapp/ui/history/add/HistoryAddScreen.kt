@@ -45,7 +45,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.ui.components.BasicBottomSheet
@@ -60,7 +59,6 @@ import com.example.moneyapp.ui.history.HistoryViewModel
 import com.example.moneyapp.ui.theme.BodyText
 import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.ui.theme.MainBlack
-import com.example.moneyapp.util.formatMoney
 
 /* 내역 추가 화면 */
 @Composable
@@ -133,7 +131,7 @@ private fun HistoryAddContent(historyAddState: HistoryAddState, onEvent: (Histor
         BasicNumberEditBar(
             name = "금액",
             value = historyAddState.inputData.amount.toString(),
-            onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryAddField.AMOUNT, it)) },
+            onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryField.AMOUNT, it)) },
             isRequired = true
         )
 
@@ -160,20 +158,20 @@ private fun HistoryAddContent(historyAddState: HistoryAddState, onEvent: (Histor
         BasicEditBar(
             name = "이름",
             value = historyAddState.inputData.description,
-            onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryAddField.NAME, it)) }
+            onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryField.NAME, it)) }
         )
 
-//        BasicEditBar(
-//            name = "메모",
-//            value = historyAddState.inputData.memo,
-//            onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryAddField.MEMO, it)) }
-//        )
+        BasicEditBar(
+            name = "메모",
+            value = historyAddState.inputData.memo ?: "",
+            onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryField.MEMO, it)) }
+        )
     }
 }
 
 /* 카테고리 선택 바텀 시트 내용 */
 @Composable
-private fun CategoryBottomSheetContent(
+fun CategoryBottomSheetContent(
     categories: List<Category>,
     onClick: (Category) -> Unit
 ) {
@@ -219,7 +217,7 @@ private fun CategoryItem(
 
 /* 내역 종류 수정 바 */
 @Composable
-private fun EditTypeBar(
+fun EditTypeBar(
     value: TransactionType,
     onValueChange: (TransactionType) -> Unit = {}
 ) {

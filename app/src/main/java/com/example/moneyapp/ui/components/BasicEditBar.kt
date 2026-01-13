@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.util.toHmString
 import com.example.moneyapp.util.toYmdeString
+import java.time.LocalDateTime
 import java.util.Date
 import kotlin.math.max
 
@@ -120,8 +121,8 @@ fun BasicNumberEditBar(
 @Composable
 fun BasicDateEditBar(
     name: String,
-    value: Date,
-    onValueChange: (Date) -> Unit,
+    value: LocalDateTime,
+    onValueChange: (LocalDateTime) -> Unit,
     isRequired: Boolean = false
 ) {
     var openDialog by rememberSaveable { mutableStateOf(false) }
@@ -166,8 +167,8 @@ fun BasicDateEditBar(
 @Composable
 fun BasicTimeEditBar(
     name: String,
-    value: Date,
-    onValueChange: (Date) -> Unit,
+    value: LocalDateTime,
+    onValueChange: (LocalDateTime) -> Unit,
     isRequired: Boolean = false
 ) {
     var openDialog by rememberSaveable { mutableStateOf(false) }
