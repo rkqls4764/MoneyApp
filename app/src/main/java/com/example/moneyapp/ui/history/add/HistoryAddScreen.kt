@@ -135,19 +135,19 @@ private fun HistoryAddContent(historyAddState: HistoryAddState, onEvent: (Histor
             isRequired = true
         )
 
-        BasicDateEditBar(
-            name = "날짜",
-            value = historyAddState.inputData.date,
-            onValueChange = { onEvent(HistoryAddEvent.ChangedDateWith(it)) },
-            isRequired = true
-        )
-
-        BasicTimeEditBar(
-            name = "시간",
-            value = historyAddState.inputData.date,
-            onValueChange = { onEvent(HistoryAddEvent.ChangedDateWith(it)) },
-            isRequired = true
-        )
+//        BasicDateEditBar(
+//            name = "날짜",
+//            value = historyAddState.inputData.date,
+//            onValueChange = { onEvent(HistoryAddEvent.ChangedDateWith(it)) },
+//            isRequired = true
+//        )
+//
+//        BasicTimeEditBar(
+//            name = "시간",
+//            value = historyAddState.inputData.date,
+//            onValueChange = { onEvent(HistoryAddEvent.ChangedDateWith(it)) },
+//            isRequired = true
+//        )
 
         BasicSearchEditBar(
             name = "카테고리",
