@@ -49,6 +49,7 @@ class CalendarViewModel @Inject constructor(private val moneyRepository: MoneyRe
         _calendarState.update { CalendarReducer.reduce(it, e) }
 
         when (e) {
+            is CalendarEvent.ClickedHistory -> _uiEffect.tryEmit(UiEffect.Navigate("historyDetail"))
             else -> Unit
         }
     }

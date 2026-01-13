@@ -143,8 +143,9 @@ private fun HistoriesBottomSheet(histories: List<TransactionWithCategory>?, summ
 @Composable
 private fun HistoryItem(history: TransactionWithCategory, onEvent: (CalendarEvent) -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = { /* TODO: 내역 목록 아이템 클릭 이벤트 - 내역 상세 조회 화면으로 이동 */ }),
-        border = BorderStroke(width = 0.5.dp, color = Color.LightGray)
+        modifier = Modifier.fillMaxWidth(),
+        border = BorderStroke(width = 0.5.dp, color = Color.LightGray),
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().background(color = Color.White).padding(vertical = 14.dp, horizontal = 24.dp),
@@ -299,8 +300,8 @@ private fun RowScope.SummaryItem(name: String, price: Long, color: Color) {
             )
 
             Text(
-                text = String.format("%,d", price),
-                fontSize = CaptionText,
+                text = formatMoney(price),
+                fontSize = if (formatMoney(price).length > 15) CalendarText else CaptionText,
                 color = color,
                 maxLines = 1,
                 modifier = Modifier.horizontalScroll(state = rememberScrollState()) // 길이가 길면 좌우 스크롤

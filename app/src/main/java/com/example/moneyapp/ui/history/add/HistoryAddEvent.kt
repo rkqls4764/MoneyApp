@@ -33,4 +33,7 @@ sealed interface HistoryAddEvent {
 
     // 내역 추가 버튼 클릭 이벤트
     data object ClickedAdd: HistoryAddEvent
+
+    // 뒤로가기 버튼 클릭 이벤트
+    data object ClickedBack: HistoryAddEvent
 }

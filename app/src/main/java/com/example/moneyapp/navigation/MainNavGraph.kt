@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.moneyapp.ui.effect.CollectUiEffect
 import com.example.moneyapp.ui.history.HistoryViewModel
 import com.example.moneyapp.ui.history.add.HistoryAddScreen
+import com.example.moneyapp.ui.history.detail.HistoryDetailScreen
 import com.example.moneyapp.ui.home.HomeScreen
 import com.example.moneyapp.ui.home.calendar.CalendarViewModel
 
@@ -27,7 +28,8 @@ fun MainNavGraph(navController: NavHostController = rememberNavController()) {
         navController = navController,
         startDestination = "home"
     ) {
-        composable("home") { HomeScreen(navController, calendarViewModel) }             // 홈 화면
-        composable("historyAdd") { HistoryAddScreen(navController, historyViewModel) }  // 내역 추가 화면
+        composable("home") { HomeScreen(navController, calendarViewModel) }                     // 홈 화면
+        composable("historyAdd") { HistoryAddScreen(historyViewModel) }          // 내역 추가 화면
+        composable("historyDetail") { HistoryDetailScreen(historyViewModel) }    // 내역 상세 화면
     }
 }
