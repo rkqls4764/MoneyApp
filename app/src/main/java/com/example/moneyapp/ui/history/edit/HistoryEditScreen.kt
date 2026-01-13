@@ -96,27 +96,27 @@ private fun HistoryEditContent(historyEditState: HistoryEditState, onEvent: (His
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         EditTypeBar(
-            value = historyEditState.inputData.type,
+            value = historyEditState.inputData.transaction.type,
             onValueChange = { onEvent(HistoryEditEvent.ChangedTypeWith(it)) }
         )
 
         BasicNumberEditBar(
             name = "금액",
-            value = historyEditState.inputData.amount.toString(),
+            value = historyEditState.inputData.transaction.amount.toString(),
             onValueChange = { onEvent(HistoryEditEvent.ChangedValueWith(HistoryField.AMOUNT, it)) },
             isRequired = true
         )
 
         BasicDateEditBar(
             name = "날짜",
-            value = historyEditState.inputData.date,
+            value = historyEditState.inputData.transaction.date,
             onValueChange = { onEvent(HistoryEditEvent.ChangedDateWith(it)) },
             isRequired = true
         )
 
         BasicTimeEditBar(
             name = "시간",
-            value = historyEditState.inputData.date,
+            value = historyEditState.inputData.transaction.date,
             onValueChange = { onEvent(HistoryEditEvent.ChangedDateWith(it)) },
             isRequired = true
         )
@@ -129,13 +129,13 @@ private fun HistoryEditContent(historyEditState: HistoryEditState, onEvent: (His
 
         BasicEditBar(
             name = "이름",
-            value = historyEditState.inputData.description,
+            value = historyEditState.inputData.transaction.description,
             onValueChange = { onEvent(HistoryEditEvent.ChangedValueWith(HistoryField.NAME, it)) }
         )
 
         BasicEditBar(
             name = "메모",
-            value = historyEditState.inputData.memo ?: "",
+            value = historyEditState.inputData.transaction.memo ?: "",
             onValueChange = { onEvent(HistoryEditEvent.ChangedValueWith(HistoryField.MEMO, it)) }
         )
     }

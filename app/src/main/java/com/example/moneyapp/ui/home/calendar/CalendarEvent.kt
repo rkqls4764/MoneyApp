@@ -1,5 +1,6 @@
 package com.example.moneyapp.ui.home.calendar
 
+import com.example.moneyapp.data.entity.TransactionWithCategory
 import java.time.LocalDate
 
 sealed interface CalendarEvent {
@@ -24,7 +25,5 @@ sealed interface CalendarEvent {
     data object ClickedMovePrevDay: CalendarEvent
 
     /* 내역 아이템 클릭 이벤트 */
-    data class ClickedHistory(
-        val id: String
-    ): CalendarEvent
+    data object ClickedHistory: CalendarEvent
 }
