@@ -11,6 +11,7 @@ object CalendarReducer {
         is CalendarEvent.ClickedDayBlock -> handleClickedDayBlock(s, e.date)
         CalendarEvent.ClickedMoveNextDay -> handleClickedMoveNextDay(s)
         CalendarEvent.ClickedMovePrevDay -> handleClickedMovePrevDay(s)
+        CalendarEvent.ClickedHistory -> handleClickedHistory(s)
         else -> s
     }
 
@@ -55,5 +56,11 @@ object CalendarReducer {
         val newYearMonth = YearMonth.from(newDate)
 
         return state.copy(yearMonth = if (state.yearMonth != newYearMonth) newYearMonth else state.yearMonth, selectedDate = newDate)
+    }
+
+    private fun handleClickedHistory(
+        state: CalendarState
+    ): CalendarState {
+        return state.copy(openSheet = false)
     }
 }

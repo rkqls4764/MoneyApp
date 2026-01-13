@@ -21,6 +21,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.example.moneyapp.data.entity.MoneyTransaction
+import com.example.moneyapp.data.entity.TransactionType
+import com.example.moneyapp.data.entity.TransactionWithCategory
 import com.example.moneyapp.ui.components.BasicButton
 import com.example.moneyapp.ui.components.BasicDialog
 import com.example.moneyapp.ui.components.BasicInfoBar
@@ -28,6 +30,7 @@ import com.example.moneyapp.ui.components.DeleteIconTopBar
 import com.example.moneyapp.ui.history.HistoryViewModel
 import com.example.moneyapp.ui.history.edit.HistoryEditEvent
 import com.example.moneyapp.ui.theme.MainBlack
+import com.example.moneyapp.util.formatMoney
 import com.example.moneyapp.util.toHmString
 import com.example.moneyapp.util.toYmdeString
 
@@ -85,48 +88,48 @@ fun HistoryDetailScreen(historyViewModel: HistoryViewModel) {
 
 /* 내역 상세 내용 */
 @Composable
-private fun HistoryDetailContent(historyInfo: MoneyTransaction) {
+private fun HistoryDetailContent(historyInfo: TransactionWithCategory) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp).padding(top = 10.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         BasicInfoBar(
             name = "구분",
-            value = historyInfo.type.name
+            value = if (historyInfo.transaction.type == TransactionType.INCOME) "수입" else "지출"
         )
 
         BasicInfoBar(
             name = "금액",
-            value = historyInfo.amount.toString().format("%,d")
+            value = "${formatMoney(historyInfo.transaction.amount)} 원"
         )
 
         HorizontalDivider(color = MainBlack.copy(alpha = 0.2f))
 
         BasicInfoBar(
             name = "날짜",
-            value = historyInfo.date.toYmdeString()
+            value = historyInfo.transaction.date.toYmdeString()
         )
 
         BasicInfoBar(
             name = "시간",
-            value = historyInfo.date.toHmString()
+            value = historyInfo.transaction.date.toHmString()
         )
 
         HorizontalDivider(color = MainBlack.copy(alpha = 0.2f))
 
         BasicInfoBar(
             name = "카테고리",
-            value = if (historyInfo.categoryId == null) "없음" else historyInfo.categoryId.toString()
+            value = if (historyInfo.transaction.categoryId == null) "없음" else historyInfo.transaction.categoryId.toString()
         )
 
         BasicInfoBar(
             name = "이름",
-            value = historyInfo.description
+            value = historyInfo.transaction.description
         )
 
         BasicInfoBar(
             name = "메모",
-            value = historyInfo.memo ?: "없음"
+            value = if (historyInfo.transaction.memo.isNullOrEmpty()) "없음" else historyInfo.transaction.memo
         )
     }
 }

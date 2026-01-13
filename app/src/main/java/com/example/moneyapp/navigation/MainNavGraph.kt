@@ -33,12 +33,10 @@ fun MainNavGraph(navController: NavHostController = rememberNavController()) {
         navController = navController,
         startDestination = "home"
     ) {
-        composable("home") { HomeScreen(navController, calendarViewModel) }     // 홈 화면
-
-        composable("historyAdd") { HistoryAddScreen(historyViewModel) }         // 내역 추가 화면
-        composable("historyDetail") { HistoryDetailScreen(historyViewModel) }   // 내역 상세 화면
-        composable("historyEdit") { HistoryEditScreen(historyViewModel) }       // 내역 수정 화면
-
-        composable("categoryManage") { CategoryManageScreen(categoryViewModel) }    // 카테고리 관리 화면
+        composable("home") { HomeScreen(navController, calendarViewModel, historyViewModel) }   // 홈 화면
+        composable("historyAdd") { HistoryAddScreen(historyViewModel) }                         // 내역 추가 화면
+        composable("historyDetail") { HistoryDetailScreen(historyViewModel) }                   // 내역 상세 화면
+        composable("historyEdit") { HistoryEditScreen(historyViewModel) }                       // 내역 수정 화면
+        composable("categoryManage") { CategoryManageScreen(categoryViewModel) }                // 카테고리 관리 화면
     }
 }

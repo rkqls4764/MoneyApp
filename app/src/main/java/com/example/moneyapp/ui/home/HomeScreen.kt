@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import com.example.moneyapp.ui.components.BasicBottomBar
 import com.example.moneyapp.ui.components.BasicFloatingButton
 import com.example.moneyapp.ui.components.BasicTopBar
+import com.example.moneyapp.ui.history.HistoryViewModel
 import com.example.moneyapp.ui.home.calendar.CalendarScreen
 import com.example.moneyapp.ui.home.calendar.CalendarViewModel
 import com.example.moneyapp.ui.home.setting.SettingScreen
@@ -23,7 +24,7 @@ import com.example.moneyapp.ui.home.statistic.StatisticScreen
 
 /* 홈 화면 */
 @Composable
-fun HomeScreen(navController: NavController, calendarViewModel: CalendarViewModel) {
+fun HomeScreen(navController: NavController, calendarViewModel: CalendarViewModel, historyViewModel: HistoryViewModel) {
     var showScreenNum by rememberSaveable { mutableStateOf(1) }  // 출력 화면
 
     Scaffold(
@@ -61,7 +62,7 @@ fun HomeScreen(navController: NavController, calendarViewModel: CalendarViewMode
         ) {
             when (showScreenNum) {
                 0 -> { StatisticScreen(navController = navController) }
-                1 -> { CalendarScreen(calendarViewModel = calendarViewModel) }
+                1 -> { CalendarScreen(calendarViewModel = calendarViewModel, historyViewModel = historyViewModel) }
                 2 -> { SettingScreen(navController = navController) }
             }
         }

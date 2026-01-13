@@ -48,8 +48,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.data.entity.TransactionWithCategory
 import com.example.moneyapp.ui.components.EmptyState
+import com.example.moneyapp.ui.history.HistoryViewModel
+import com.example.moneyapp.ui.history.detail.HistoryDetailEvent
 import com.example.moneyapp.ui.theme.BodyText
 import com.example.moneyapp.ui.theme.CalendarText
 import com.example.moneyapp.ui.theme.CaptionText
@@ -59,6 +62,7 @@ import com.example.moneyapp.ui.theme.MainBlue
 import com.example.moneyapp.ui.theme.MainRed
 import com.example.moneyapp.ui.theme.TitleText
 import com.example.moneyapp.ui.theme.TodayBlockColor
+import com.example.moneyapp.util.formatMoney
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -66,7 +70,7 @@ import java.time.format.DateTimeFormatter
 
 /* 캘린더 화면 */
 @Composable
-fun CalendarScreen(calendarViewModel: CalendarViewModel) {
+fun CalendarScreen(calendarViewModel: CalendarViewModel, historyViewModel: HistoryViewModel) {
     val onEvent = calendarViewModel::onEvent
     val calendarState by calendarViewModel.calendarState.collectAsState()
 
@@ -75,6 +79,10 @@ fun CalendarScreen(calendarViewModel: CalendarViewModel) {
             histories = calendarState.dailyHistories[calendarState.selectedDate],
             summary = calendarState.dailySummaries[calendarState.selectedDate],
             date = calendarState.selectedDate,
+            onClick = {
+                onEvent(CalendarEvent.ClickedHistory)
+                historyViewModel.onDetailEvent(HistoryDetailEvent.InitWith(it))
+            },
             onEvent = onEvent
         )
     }
@@ -92,7 +100,7 @@ fun CalendarScreen(calendarViewModel: CalendarViewModel) {
 /* 내역 목록 바텀 시트 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HistoriesBottomSheet(histories: List<TransactionWithCategory>?, summary: AmountSummary?, date: LocalDate, onEvent: (CalendarEvent) -> Unit) {
+private fun HistoriesBottomSheet(histories: List<TransactionWithCategory>?, summary: AmountSummary?, date: LocalDate, onClick: (TransactionWithCategory) -> Unit, onEvent: (CalendarEvent) -> Unit) {
     val sheetState = rememberModalBottomSheetState()
 
     ModalBottomSheet(
@@ -116,7 +124,7 @@ private fun HistoriesBottomSheet(histories: List<TransactionWithCategory>?, summ
             )
 
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(top = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -130,7 +138,7 @@ private fun HistoriesBottomSheet(histories: List<TransactionWithCategory>?, summ
                     items(histories) { history ->
                         HistoryItem(
                             history = history,
-                            onEvent = onEvent
+                            onClick = { onClick(history) }
                         )
                     }
                 }
@@ -141,7 +149,7 @@ private fun HistoriesBottomSheet(histories: List<TransactionWithCategory>?, summ
 
 /* 내역 목록 아이템 */
 @Composable
-private fun HistoryItem(history: TransactionWithCategory, onEvent: (CalendarEvent) -> Unit) {
+private fun HistoryItem(history: TransactionWithCategory, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         border = BorderStroke(width = 0.5.dp, color = Color.LightGray),
@@ -159,8 +167,8 @@ private fun HistoryItem(history: TransactionWithCategory, onEvent: (CalendarEven
             )
 
             Text(
-                text = history.transaction.amount.toString(),
-                color = MainBlue,
+                text = if (history.transaction.type == TransactionType.INCOME) "+ ${formatMoney(history.transaction.amount)} 원" else "- ${formatMoney(history.transaction.amount)} 원",
+                color = if (history.transaction.type == TransactionType.INCOME) MainBlue else MainRed,
                 fontSize = BodyText,
                 fontWeight = FontWeight.SemiBold
             )

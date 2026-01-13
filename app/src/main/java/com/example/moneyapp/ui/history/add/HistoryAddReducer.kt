@@ -3,10 +3,12 @@ package com.example.moneyapp.ui.history.add
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
+import com.example.moneyapp.data.entity.TransactionWithCategory
 import java.time.LocalDateTime
 
 object HistoryAddReducer {
     fun reduce(s: HistoryAddState, e: HistoryAddEvent): HistoryAddState = when (e) {
+        HistoryAddEvent.Init -> handleInit()
         is HistoryAddEvent.ChangedValueWith -> handleChangedValue(s, e.field, e.value)
         is HistoryAddEvent.ChangedTypeWith -> handleChangedType(s, e.type)
         is HistoryAddEvent.ChangedDateWith -> handleChangedDate(s, e.date)
@@ -14,11 +16,15 @@ object HistoryAddReducer {
         else -> s
     }
 
-    private val historyUpdaters: Map<HistoryField, (MoneyTransaction, String) -> MoneyTransaction> =
+    private fun handleInit(): HistoryAddState {
+        return HistoryAddState()
+    }
+
+    private val historyUpdaters: Map<HistoryField, (TransactionWithCategory, String) -> TransactionWithCategory> =
         mapOf(
-            HistoryField.NAME        to { s, v -> s.copy(description = v) },
-            HistoryField.AMOUNT      to { s, v -> s.copy(amount = v.toLong()) },
-            HistoryField.MEMO        to { s, v -> s.copy(memo = v) }
+            HistoryField.NAME        to { s, v -> s.copy(transaction = s.transaction.copy(description = v)) },
+            HistoryField.AMOUNT      to { s, v -> s.copy(transaction = s.transaction.copy(amount = v.toLong())) },
+            HistoryField.MEMO        to { s, v -> s.copy(transaction = s.transaction.copy(memo = v)) }
         )
 
     private fun handleChangedValue(
@@ -34,20 +40,20 @@ object HistoryAddReducer {
         state: HistoryAddState,
         type: TransactionType
     ): HistoryAddState {
-        return state.copy(inputData = state.inputData.copy(type = type))
+        return state.copy(inputData = state.inputData.copy(transaction = state.inputData.transaction.copy(type = type)))
     }
 
     private fun handleChangedDate(
         state: HistoryAddState,
         date: LocalDateTime
     ): HistoryAddState {
-        return state.copy(inputData = state.inputData.copy(date = date))
+        return state.copy(inputData = state.inputData.copy(transaction = state.inputData.transaction.copy(date = date)))
     }
 
     private fun handleChangedCategory(
         state: HistoryAddState,
         category: Category
     ): HistoryAddState {
-        return state.copy(inputData = state.inputData.copy(categoryId = category.id), selectedCategoryName = category.name)
+        return state.copy(inputData = state.inputData.copy(transaction = state.inputData.transaction.copy(categoryId = category.id)), selectedCategoryName = category.name)
     }
 }

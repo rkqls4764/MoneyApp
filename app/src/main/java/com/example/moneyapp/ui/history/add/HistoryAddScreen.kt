@@ -29,6 +29,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +57,7 @@ import com.example.moneyapp.ui.components.BasicDateEditBar
 import com.example.moneyapp.ui.components.BasicSearchEditBar
 import com.example.moneyapp.ui.components.BasicTimeEditBar
 import com.example.moneyapp.ui.history.HistoryViewModel
+import com.example.moneyapp.ui.history.edit.HistoryEditEvent
 import com.example.moneyapp.ui.theme.BodyText
 import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.ui.theme.MainBlack
@@ -97,6 +99,12 @@ fun HistoryAddScreen(historyViewModel: HistoryViewModel) {
             )
         }
     }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            onEvent(HistoryAddEvent.Init)
+        }
+    }
 }
 
 /* 내역 추가 내용 */
@@ -108,7 +116,7 @@ private fun HistoryAddContent(historyAddState: HistoryAddState, onEvent: (Histor
         BasicBottomSheet(
             content = {
                 CategoryBottomSheetContent(
-                    categories = historyAddState.categories,
+                    categories = historyAddState.categories.filter { it.type == historyAddState.inputData.transaction.type },
                     onClick = {
                         onEvent(HistoryAddEvent.ChangedCategoryWith(it))
                         openSheet = false
@@ -124,30 +132,30 @@ private fun HistoryAddContent(historyAddState: HistoryAddState, onEvent: (Histor
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         EditTypeBar(
-            value = historyAddState.inputData.type,
+            value = historyAddState.inputData.transaction.type,
             onValueChange = { onEvent(HistoryAddEvent.ChangedTypeWith(it)) }
         )
 
         BasicNumberEditBar(
             name = "금액",
-            value = historyAddState.inputData.amount.toString(),
+            value = historyAddState.inputData.transaction.amount.toString(),
             onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryField.AMOUNT, it)) },
             isRequired = true
         )
 
-//        BasicDateEditBar(
-//            name = "날짜",
-//            value = historyAddState.inputData.date,
-//            onValueChange = { onEvent(HistoryAddEvent.ChangedDateWith(it)) },
-//            isRequired = true
-//        )
-//
-//        BasicTimeEditBar(
-//            name = "시간",
-//            value = historyAddState.inputData.date,
-//            onValueChange = { onEvent(HistoryAddEvent.ChangedDateWith(it)) },
-//            isRequired = true
-//        )
+        BasicDateEditBar(
+            name = "날짜",
+            value = historyAddState.inputData.transaction.date,
+            onValueChange = { onEvent(HistoryAddEvent.ChangedDateWith(it)) },
+            isRequired = true
+        )
+
+        BasicTimeEditBar(
+            name = "시간",
+            value = historyAddState.inputData.transaction.date,
+            onValueChange = { onEvent(HistoryAddEvent.ChangedDateWith(it)) },
+            isRequired = true
+        )
 
         BasicSearchEditBar(
             name = "카테고리",
@@ -157,13 +165,13 @@ private fun HistoryAddContent(historyAddState: HistoryAddState, onEvent: (Histor
 
         BasicEditBar(
             name = "이름",
-            value = historyAddState.inputData.description,
+            value = historyAddState.inputData.transaction.description,
             onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryField.NAME, it)) }
         )
 
         BasicEditBar(
             name = "메모",
-            value = historyAddState.inputData.memo ?: "",
+            value = historyAddState.inputData.transaction.memo ?: "",
             onValueChange = { onEvent(HistoryAddEvent.ChangedValueWith(HistoryField.MEMO, it)) }
         )
     }

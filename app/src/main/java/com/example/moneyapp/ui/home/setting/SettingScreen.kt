@@ -60,7 +60,7 @@ private fun SettingMenuButton(icon: ImageVector, text: String, onClick: () -> Un
         shape = RoundedCornerShape(percent = 20),
         contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-        border = BorderStroke(width = 1.dp, color = MainBlack)
+        border = BorderStroke(width = 1.dp, color = MainBlack.copy(0.8f))
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

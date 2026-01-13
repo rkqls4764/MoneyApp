@@ -3,13 +3,14 @@ package com.example.moneyapp.ui.history.edit
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
+import com.example.moneyapp.data.entity.TransactionWithCategory
 import com.example.moneyapp.ui.history.add.HistoryField
 import java.time.LocalDateTime
 
 sealed interface HistoryEditEvent {
     // 초기화
     data class InitWith(
-        val data: MoneyTransaction
+        val data: TransactionWithCategory
     ): HistoryEditEvent
 
     // 뒤로가기 버튼 클릭 이벤트
