@@ -95,7 +95,7 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
     fun updateHistory() {
         viewModelScope.launch {
             moneyRepository.update(
-                transaction = historyAddState.value.inputData.transaction
+                transaction = historyEditState.value.inputData.transaction
             )
 
             _uiEffect.emit(UiEffect.NavigateBack)
@@ -109,7 +109,7 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
     fun deleteHistory() {
         viewModelScope.launch {
             moneyRepository.delete(
-                transaction = historyAddState.value.inputData.transaction
+                transaction = historyDetailState.value.historyInfo.transaction
             )
 
             _uiEffect.emit(UiEffect.NavigateBack)
