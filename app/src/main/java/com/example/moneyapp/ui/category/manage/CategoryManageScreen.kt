@@ -116,7 +116,7 @@ private fun CategoryListContent(categories: List<Category>, onClick: (Category) 
 
 /* 카테고리 목록 아이템 */
 @Composable
-private fun CategoryItem(category: Category, onClick: () -> Unit) {
+fun CategoryItem(category: Category, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         border = BorderStroke(width = 0.5.dp, color = Color.LightGray),
