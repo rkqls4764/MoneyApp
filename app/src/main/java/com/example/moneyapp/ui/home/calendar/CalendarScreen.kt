@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.moneyapp.data.entity.TransactionType
@@ -63,6 +64,7 @@ import com.example.moneyapp.ui.theme.MainRed
 import com.example.moneyapp.ui.theme.TitleText
 import com.example.moneyapp.ui.theme.TodayBlockColor
 import com.example.moneyapp.util.formatMoney
+import com.example.moneyapp.util.toHmString
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -155,22 +157,44 @@ private fun HistoryItem(history: TransactionWithCategory, onClick: () -> Unit) {
         border = BorderStroke(width = 0.5.dp, color = Color.LightGray),
         onClick = onClick
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().background(color = Color.White).padding(vertical = 14.dp, horizontal = 24.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier.fillMaxWidth().background(color = Color.White).padding(vertical = 14.dp, horizontal = 24.dp)
         ) {
-            Text(
-                text = history.transaction.description,
-                color = MainBlack,
-                fontSize = BodyText
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = if (history.category == null) history.transaction.description else "[${history.category.name}]  ${history.transaction.description}",
+                    color = MainBlack,
+                    fontSize = BodyText,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(0.55f)
+                )
+
+                Spacer(modifier = Modifier.weight(0.05f))
+
+                Text(
+                    text = if (history.transaction.type == TransactionType.INCOME) "+ ${formatMoney(history.transaction.amount)} 원" else "- ${formatMoney(history.transaction.amount)} 원",
+                    color = if (history.transaction.type == TransactionType.INCOME) MainBlue else MainRed,
+                    fontSize = BodyText,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.weight(0.4f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = if (history.transaction.type == TransactionType.INCOME) "+ ${formatMoney(history.transaction.amount)} 원" else "- ${formatMoney(history.transaction.amount)} 원",
-                color = if (history.transaction.type == TransactionType.INCOME) MainBlue else MainRed,
-                fontSize = BodyText,
-                fontWeight = FontWeight.SemiBold
+                text = history.transaction.date.toHmString(),
+                color = MainBlack.copy(alpha = 0.5f),
+                fontSize = CaptionText,
+                textAlign = TextAlign.End,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
