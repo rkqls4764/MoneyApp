@@ -159,4 +159,137 @@ class MoneyRepositoryTest {
         assertEquals(2, result.size) // 간식, 커피 2개 나와야 함
         assertTrue(result.all { it.transaction.type == TransactionType.EXPENSE }) // 모두 지출이어야 함
     }
+
+    // 수정(Update) 테스트
+    @Test
+    fun updateTransaction_changesData() = runBlocking {
+        // [Given] 초기 데이터 저장
+        val originalTransaction = MoneyTransaction(
+            amount = 1000,
+            description = "수정전",
+            memo = "메모전",
+            type = TransactionType.EXPENSE,
+            categoryId = null,
+            date = LocalDateTime.now()
+        )
+        repository.insert(originalTransaction)
+
+        // 중요: Insert 된 데이터를 DB에서 다시 꺼내와야 함 (자동 생성된 ID를 알기 위해)
+        val start = LocalDateTime.of(1970, 1, 1, 0, 0)
+        val end = LocalDateTime.now()
+        val savedList = repository.getCalendarData(start, end).first()
+        val savedTransaction = savedList[0].transaction // ID가 세팅된 진짜 객체
+
+        // [When] 데이터 수정 (금액 1000 -> 9999, 내용 "수정전" -> "수정후")
+        // copy를 사용하면 ID는 그대로 유지되고 나머지 값만 바뀝니다.
+        val updatedTransaction = savedTransaction.copy(
+            amount = 9999,
+            description = "수정후"
+        )
+        repository.update(updatedTransaction)
+
+        // [Then] 다시 조회해서 바뀐 값인지 확인
+        val resultList = repository.getCalendarData(start, end).first()
+        val resultTransaction = resultList[0].transaction
+
+        assertEquals(1, resultList.size) // 개수는 여전히 1개여야 함
+        assertEquals(9999L, resultTransaction.amount) // 금액이 바뀌었는지
+        assertEquals("수정후", resultTransaction.description) // 내용이 바뀌었는지
+        assertEquals("메모전", resultTransaction.memo) // 안 바꾼 건 그대로인지
+    }
+
+    // 삭제(Delete) 테스트
+    @Test
+    fun deleteTransaction_removesData() = runBlocking {
+        // [Given] 데이터 저장
+        val transaction = MoneyTransaction(
+            amount = 5000,
+            description = "삭제할거",
+            memo = null,
+            type = TransactionType.EXPENSE,
+            categoryId = null,
+            date = LocalDateTime.now()
+        )
+        repository.insert(transaction)
+
+        // 저장 확인 (ID 확보를 위해 조회)
+        val start = LocalDateTime.of(1970, 1, 1, 0, 0)
+        val end = LocalDateTime.now()
+        val savedList = repository.getCalendarData(start, end).first()
+
+        // 데이터가 1개 들어갔는지 먼저 확인
+        assertEquals(1, savedList.size)
+        val itemToDelete = savedList[0].transaction
+
+        // [When] 삭제 수행
+        repository.delete(itemToDelete)
+
+        // [Then] 다시 조회했을 때 리스트가 비어있어야 함
+        val resultList = repository.getCalendarData(start, end).first()
+
+        assertTrue(resultList.isEmpty()) // 리스트가 비었는지 확인 (size == 0)
+        assertEquals(0, resultList.size)
+    }
+
+    // 통계(집계) 기능 테스트
+    @Test
+    fun getCategoryStats_calculatesCorrectSums() = runBlocking {
+        // [Given 1] 카테고리 3개 준비 (식비, 교통비, 월급)
+        val foodCat = Category(name = "식비", type = TransactionType.EXPENSE)
+        val trafficCat = Category(name = "교통비", type = TransactionType.EXPENSE)
+        val salaryCat = Category(name = "월급", type = TransactionType.INCOME)
+
+        categoryDao.insert(foodCat)
+        categoryDao.insert(trafficCat)
+        categoryDao.insert(salaryCat)
+
+        // DB에서 ID 따오기
+        val cats = categoryDao.getAllCategories().first()
+        /* !! : non-null 이라는 의미. null이면 에러 출력해라 */
+        val foodId = cats.find { it.name == "식비" }!!.id
+        val trafficId = cats.find { it.name == "교통비" }!!.id
+        val salaryId = cats.find { it.name == "월급" }!!.id
+
+        // [Given 2] 내역 4개 추가 (같은 카테고리 여러 개 섞어서)
+        val now = LocalDateTime.now() // 오늘
+
+        // 식비 2건 (1000원 + 2000원 = 3000원 예상)
+        moneyDao.insert(MoneyTransaction(amount = 1000, description = "김밥", categoryId = foodId.toLong(), type = TransactionType.EXPENSE, date = now, memo = ""))
+        moneyDao.insert(MoneyTransaction(amount = 2000, description = "라면", categoryId = foodId.toLong(), type = TransactionType.EXPENSE, date = now, memo = ""))
+
+        // 교통비 1건 (5000원 예상)
+        moneyDao.insert(MoneyTransaction(amount = 5000, description = "택시", categoryId = trafficId.toLong(), type = TransactionType.EXPENSE, date = now, memo = ""))
+
+        // 월급 1건 (10000원 예상)
+        moneyDao.insert(MoneyTransaction(amount = 10000, description = "급여", categoryId = salaryId.toLong(), type = TransactionType.INCOME, date = now, memo = ""))
+
+        // [When] 이번 달 통계 요청
+        // 시작일: 1970년, 종료일: 내일 (모든 데이터 포함되게 넉넉히)
+        val start = LocalDateTime.of(1970, 1, 1, 0, 0)
+        val end = now.plusDays(1)
+
+        /* 보통 flow 타입을 반환하기 때문에 first()로 끊어줌 */
+        val stats = repository.getCategoryStats(start, end).first()
+
+        // [Then] 검증 시작!
+
+        // 1. 총 카테고리 3개가 나와야 함
+        assertEquals(3, stats.size)
+
+        // 2. 식비 검증
+        val foodStat = stats.find { it.categoryId == 1L }
+        /* ?. : null이면 null 리턴. null 아니면 . 뒤에꺼 꺼냄 */
+        assertEquals(3000L, foodStat?.totalAmount)
+        assertEquals(TransactionType.EXPENSE, foodStat?.type)
+
+        // 3. 교통비 검증
+        val trafficStat = stats.find { it.categoryName == "교통비" }
+        assertEquals(5000L, trafficStat?.totalAmount)
+
+        // 4. 월급 검증
+        val salaryStat = stats.find { it.categoryName == "월급" }
+        assertEquals(10000L, salaryStat?.totalAmount)
+        assertEquals(TransactionType.INCOME, salaryStat?.type)
+    }
+
 }

@@ -111,7 +111,6 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
             moneyRepository.delete(
                 transaction = historyAddState.value.inputData.transaction
             )
-
             _uiEffect.emit(UiEffect.NavigateBack)
             _uiEffect.emit(UiEffect.ShowToast("내역이 삭제되었습니다."))
 

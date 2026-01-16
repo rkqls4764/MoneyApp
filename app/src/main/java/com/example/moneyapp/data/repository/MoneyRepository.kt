@@ -1,6 +1,7 @@
 package com.example.moneyapp.data.repository
 
 import com.example.moneyapp.data.database.MoneyDao
+import com.example.moneyapp.data.entity.CategoryStat
 import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.data.entity.TransactionWithCategory
@@ -72,7 +73,14 @@ class MoneyRepository @Inject constructor(private val moneyDao: MoneyDao) {
 
     // 통계용
     // 수입/지출/잔액 조회
-    // 검색조건 : 날짜(기간), 수입/지출, 카테고리
+    // 검색조건 : 날짜(기간)
+
+    // 결과 : 수입/지출 - 카테고리 별 총 금액
+    fun getCategoryStats(start: LocalDateTime, end: LocalDateTime): Flow<List<CategoryStat>> {
+        return moneyDao.getCategoryStats(start, end)
+    }
+
+
 
 
 
