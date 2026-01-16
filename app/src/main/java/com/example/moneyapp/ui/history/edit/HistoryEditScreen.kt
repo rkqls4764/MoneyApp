@@ -80,7 +80,7 @@ private fun HistoryEditContent(historyEditState: HistoryEditState, onEvent: (His
         BasicBottomSheet(
             content = {
                 CategoryBottomSheetContent(
-                    categories = historyEditState.categories,
+                    categories = historyEditState.categories.filter { it.type == historyEditState.inputData.transaction.type },
                     onClick = {
                         onEvent(HistoryEditEvent.ChangedCategoryWith(it))
                         openSheet = false

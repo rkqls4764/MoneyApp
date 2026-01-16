@@ -25,11 +25,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +48,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.TransactionType
+import com.example.moneyapp.ui.category.manage.CategoryItem
 import com.example.moneyapp.ui.components.BasicBottomSheet
 import com.example.moneyapp.ui.components.BasicButton
 import com.example.moneyapp.ui.components.BasicEditBar
@@ -56,8 +57,8 @@ import com.example.moneyapp.ui.components.BasicTopBar
 import com.example.moneyapp.ui.components.BasicDateEditBar
 import com.example.moneyapp.ui.components.BasicSearchEditBar
 import com.example.moneyapp.ui.components.BasicTimeEditBar
+import com.example.moneyapp.ui.components.EmptyState
 import com.example.moneyapp.ui.history.HistoryViewModel
-import com.example.moneyapp.ui.history.edit.HistoryEditEvent
 import com.example.moneyapp.ui.theme.BodyText
 import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.ui.theme.MainBlack
@@ -69,6 +70,10 @@ fun HistoryAddScreen(historyViewModel: HistoryViewModel) {
 
     val onEvent = historyViewModel::onAddEvent
     val historyAddState by historyViewModel.historyAddState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        onEvent(HistoryAddEvent.InitFirst)
+    }
 
     Scaffold(
         topBar = {
@@ -102,7 +107,7 @@ fun HistoryAddScreen(historyViewModel: HistoryViewModel) {
 
     DisposableEffect(Unit) {
         onDispose {
-            onEvent(HistoryAddEvent.Init)
+            onEvent(HistoryAddEvent.InitLast)
         }
     }
 }
@@ -184,41 +189,23 @@ fun CategoryBottomSheetContent(
     onClick: (Category) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        items(categories) { category ->
-            CategoryItem(
-                categoryInfo = category,
-                onClick = { onClick(category) }
-            )
-        }
-    }
-}
-
-/* 카테고리 목록 아이템 */
-@Composable
-private fun CategoryItem(
-    categoryInfo: Category,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .border(width = 1.dp, color = MainBlack, shape = RoundedCornerShape(percent = 20)),
-        onClick = onClick
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = Color.White)
-                .padding(horizontal = 24.dp, vertical = 12.dp)
-        ) {
-            Text(
-                text = categoryInfo.name,
-                fontSize = BodyText
-            )
+        if (categories.isEmpty()) {
+            item {
+                EmptyState(
+                    text = "카테고리가 없습니다"
+                )
+            }
+        } else {
+            items(categories) { category ->
+                CategoryItem(
+                    category = category,
+                    onClick = { onClick(category) }
+                )
+            }
         }
     }
 }
@@ -253,7 +240,7 @@ fun EditTypeBar(
 
 /* 내역 종류 선택 아이템 */
 @Composable
-private fun TypeSelectorItem(
+fun TypeSelectorItem(
     selected: TransactionType,
     onSelected: (TransactionType) -> Unit
 ) {

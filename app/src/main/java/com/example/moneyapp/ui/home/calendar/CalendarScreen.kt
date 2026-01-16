@@ -508,10 +508,11 @@ private fun RowScope.DayBlock(date: LocalDate, isToday: Boolean, summary: Amount
         contentAlignment = Alignment.TopEnd
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 3.dp)
+            modifier = Modifier.fillMaxSize().padding(horizontal = 4.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(top = 5.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Text(
@@ -521,29 +522,40 @@ private fun RowScope.DayBlock(date: LocalDate, isToday: Boolean, summary: Amount
                 )
             }
 
-            Text(
-                text = "${summary?.income ?: 0}",
-                fontSize = CalendarText,
-                color = MainBlue,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Column(
+                modifier = Modifier.fillMaxSize().padding(bottom = 4.dp),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Text(
+                    text = "${summary?.income ?: 0}",
+                    fontSize = CalendarText,
+                    color = MainBlue,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    lineHeight = CalendarText * 1f,
+                    modifier = Modifier.padding(vertical = 2.dp)
+                )
 
-            Text(
-                text = "${summary?.expense ?: 0}",
-                fontSize = CalendarText,
-                color = MainRed,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+                Text(
+                    text = "${summary?.expense ?: 0}",
+                    fontSize = CalendarText,
+                    color = MainRed,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    lineHeight = CalendarText * 1f,
+                    modifier = Modifier.padding(vertical = 2.dp)
+                )
 
-            Text(
-                text = "${summary?.total ?: 0}",
-                fontSize = CalendarText,
-                color = MainBlack,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+                Text(
+                    text = "${summary?.total ?: 0}",
+                    fontSize = CalendarText,
+                    color = MainBlack,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    lineHeight = CalendarText * 1f,
+                    modifier = Modifier.padding(vertical = 2.dp)
+                )
+            }
         }
     }
 }
