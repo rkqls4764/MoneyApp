@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.moneyapp.ui.category.CategoryViewModel
+import com.example.moneyapp.ui.category.add.CategoryAddScreen
 import com.example.moneyapp.ui.category.manage.CategoryManageScreen
 import com.example.moneyapp.ui.effect.CollectUiEffect
 import com.example.moneyapp.ui.history.HistoryViewModel
@@ -34,9 +35,12 @@ fun MainNavGraph(navController: NavHostController = rememberNavController()) {
         startDestination = "home"
     ) {
         composable("home") { HomeScreen(navController, calendarViewModel, historyViewModel) }   // 홈 화면
+
         composable("historyAdd") { HistoryAddScreen(historyViewModel) }                         // 내역 추가 화면
         composable("historyDetail") { HistoryDetailScreen(historyViewModel) }                   // 내역 상세 화면
         composable("historyEdit") { HistoryEditScreen(historyViewModel) }                       // 내역 수정 화면
+
+        composable("categoryAdd") { CategoryAddScreen(categoryViewModel) }                      // 카테고리 추가 화면
         composable("categoryManage") { CategoryManageScreen(categoryViewModel) }                // 카테고리 관리 화면
     }
 }

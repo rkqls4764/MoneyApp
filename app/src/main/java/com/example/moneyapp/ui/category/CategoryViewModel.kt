@@ -6,6 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.repository.CategoryRepository
 import com.example.moneyapp.data.repository.MoneyRepository
+import com.example.moneyapp.ui.category.add.CategoryAddEvent
+import com.example.moneyapp.ui.category.add.CategoryAddReducer
+import com.example.moneyapp.ui.category.add.CategoryAddScreen
+import com.example.moneyapp.ui.category.add.CategoryAddState
 import com.example.moneyapp.ui.category.manage.CategoryManageEvent
 import com.example.moneyapp.ui.category.manage.CategoryManageReducer
 import com.example.moneyapp.ui.category.manage.CategoryManageState
@@ -28,8 +32,20 @@ class CategoryViewModel @Inject constructor(private val categoryRepository: Cate
     private val _uiEffect = MutableSharedFlow<UiEffect>(extraBufferCapacity = 1)
     val uiEffect = _uiEffect.asSharedFlow()
 
+    private val _categoryAddState = MutableStateFlow(CategoryAddState())
+    val categoryAddState = _categoryAddState.asStateFlow()
     private val _categoryManageState = MutableStateFlow(CategoryManageState())
     val categoryManageState = _categoryManageState.asStateFlow()
+
+    fun onAddEvent(e: CategoryAddEvent) {
+        _categoryAddState.update { CategoryAddReducer.reduce(it, e) }
+
+        when (e) {
+            CategoryAddEvent.ClickedBack -> _uiEffect.tryEmit(UiEffect.NavigateBack)
+            CategoryAddEvent.ClickedAdd -> addCategory()
+            else -> Unit
+        }
+    }
 
     fun onManageEvent(e: CategoryManageEvent) {
         _categoryManageState.update { CategoryManageReducer.reduce(it, e) }
@@ -37,21 +53,22 @@ class CategoryViewModel @Inject constructor(private val categoryRepository: Cate
         when (e) {
             CategoryManageEvent.Init -> getAllCategories()
             CategoryManageEvent.ClickedBack -> _uiEffect.tryEmit(UiEffect.NavigateBack)
+            CategoryManageEvent.ClickedAdd -> _uiEffect.tryEmit(UiEffect.Navigate("categoryAdd"))
             else -> Unit
         }
     }
 
     /* 카테고리 추가 */
-    fun addCategory(category: Category) {
+    fun addCategory() {
         viewModelScope.launch {
             categoryRepository.insert(
-                category = category
+                category = categoryAddState.value.inputData
             )
 
             _uiEffect.emit(UiEffect.NavigateBack)
             _uiEffect.emit(UiEffect.ShowToast("카테고리가 추가되었습니다."))
 
-            Log.d(TAG, "[addCategory] 카테고리 추가 성공\n")
+            Log.d(TAG, "[addCategory] 카테고리 추가 성공\n${categoryAddState.value.inputData}")
         }
     }
 

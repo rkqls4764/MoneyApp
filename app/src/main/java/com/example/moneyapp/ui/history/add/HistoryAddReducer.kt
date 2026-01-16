@@ -8,16 +8,12 @@ import java.time.LocalDateTime
 
 object HistoryAddReducer {
     fun reduce(s: HistoryAddState, e: HistoryAddEvent): HistoryAddState = when (e) {
-        HistoryAddEvent.Init -> handleInit()
+        HistoryAddEvent.Init -> HistoryAddState()
         is HistoryAddEvent.ChangedValueWith -> handleChangedValue(s, e.field, e.value)
         is HistoryAddEvent.ChangedTypeWith -> handleChangedType(s, e.type)
         is HistoryAddEvent.ChangedDateWith -> handleChangedDate(s, e.date)
         is HistoryAddEvent.ChangedCategoryWith -> handleChangedCategory(s, e.category)
         else -> s
-    }
-
-    private fun handleInit(): HistoryAddState {
-        return HistoryAddState()
     }
 
     private val historyUpdaters: Map<HistoryField, (TransactionWithCategory, String) -> TransactionWithCategory> =
