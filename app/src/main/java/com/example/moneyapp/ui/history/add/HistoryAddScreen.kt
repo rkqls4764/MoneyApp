@@ -25,11 +25,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +59,6 @@ import com.example.moneyapp.ui.components.BasicSearchEditBar
 import com.example.moneyapp.ui.components.BasicTimeEditBar
 import com.example.moneyapp.ui.components.EmptyState
 import com.example.moneyapp.ui.history.HistoryViewModel
-import com.example.moneyapp.ui.history.edit.HistoryEditEvent
 import com.example.moneyapp.ui.theme.BodyText
 import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.ui.theme.MainBlack
@@ -71,6 +70,10 @@ fun HistoryAddScreen(historyViewModel: HistoryViewModel) {
 
     val onEvent = historyViewModel::onAddEvent
     val historyAddState by historyViewModel.historyAddState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        onEvent(HistoryAddEvent.InitFirst)
+    }
 
     Scaffold(
         topBar = {
@@ -104,7 +107,7 @@ fun HistoryAddScreen(historyViewModel: HistoryViewModel) {
 
     DisposableEffect(Unit) {
         onDispose {
-            onEvent(HistoryAddEvent.Init)
+            onEvent(HistoryAddEvent.InitLast)
         }
     }
 }

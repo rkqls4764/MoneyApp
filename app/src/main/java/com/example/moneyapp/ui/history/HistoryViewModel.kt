@@ -48,7 +48,7 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
         _historyAddState.update { HistoryAddReducer.reduce(it, e) }
 
         when (e) {
-            HistoryAddEvent.Init -> getAllCategories(HistoryTarget.ADD)
+            HistoryAddEvent.InitFirst -> getAllCategories(HistoryTarget.ADD)
             HistoryAddEvent.ClickedBack -> _uiEffect.tryEmit(UiEffect.NavigateBack)
             HistoryAddEvent.ClickedAdd -> addHistory()
             else -> Unit

@@ -1,14 +1,13 @@
 package com.example.moneyapp.ui.history.add
 
 import com.example.moneyapp.data.entity.Category
-import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.data.entity.TransactionWithCategory
 import java.time.LocalDateTime
 
 object HistoryAddReducer {
     fun reduce(s: HistoryAddState, e: HistoryAddEvent): HistoryAddState = when (e) {
-        HistoryAddEvent.Init -> HistoryAddState()
+        HistoryAddEvent.InitLast -> HistoryAddState()
         is HistoryAddEvent.ChangedValueWith -> handleChangedValue(s, e.field, e.value)
         is HistoryAddEvent.ChangedTypeWith -> handleChangedType(s, e.type)
         is HistoryAddEvent.ChangedDateWith -> handleChangedDate(s, e.date)
