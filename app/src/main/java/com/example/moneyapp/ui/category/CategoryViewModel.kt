@@ -6,10 +6,24 @@ import androidx.lifecycle.viewModelScope
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.repository.CategoryRepository
 import com.example.moneyapp.data.repository.MoneyRepository
+import com.example.moneyapp.ui.category.add.CategoryAddEvent
+import com.example.moneyapp.ui.category.add.CategoryAddReducer
+import com.example.moneyapp.ui.category.add.CategoryAddScreen
+import com.example.moneyapp.ui.category.add.CategoryAddState
+import com.example.moneyapp.ui.category.detail.CategoryDetailEvent
+import com.example.moneyapp.ui.category.detail.CategoryDetailReducer
+import com.example.moneyapp.ui.category.detail.CategoryDetailState
+import com.example.moneyapp.ui.category.edit.CategoryEditEvent
+import com.example.moneyapp.ui.category.edit.CategoryEditReducer
+import com.example.moneyapp.ui.category.edit.CategoryEditState
 import com.example.moneyapp.ui.category.manage.CategoryManageEvent
 import com.example.moneyapp.ui.category.manage.CategoryManageReducer
 import com.example.moneyapp.ui.category.manage.CategoryManageState
 import com.example.moneyapp.ui.effect.UiEffect
+import com.example.moneyapp.ui.history.HistoryTarget
+import com.example.moneyapp.ui.history.detail.HistoryDetailEvent
+import com.example.moneyapp.ui.history.edit.HistoryEditEvent
+import com.example.moneyapp.ui.history.edit.HistoryEditReducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,8 +42,45 @@ class CategoryViewModel @Inject constructor(private val categoryRepository: Cate
     private val _uiEffect = MutableSharedFlow<UiEffect>(extraBufferCapacity = 1)
     val uiEffect = _uiEffect.asSharedFlow()
 
+    private val _categoryAddState = MutableStateFlow(CategoryAddState())
+    val categoryAddState = _categoryAddState.asStateFlow()
+    private val _categoryDetailState = MutableStateFlow(CategoryDetailState())
+    val categoryDetailState = _categoryDetailState.asStateFlow()
+    private val _categoryEditState = MutableStateFlow(CategoryEditState())
+    val categoryEditState = _categoryEditState.asStateFlow()
     private val _categoryManageState = MutableStateFlow(CategoryManageState())
     val categoryManageState = _categoryManageState.asStateFlow()
+
+    fun onAddEvent(e: CategoryAddEvent) {
+        _categoryAddState.update { CategoryAddReducer.reduce(it, e) }
+
+        when (e) {
+            CategoryAddEvent.ClickedBack -> _uiEffect.tryEmit(UiEffect.NavigateBack)
+            CategoryAddEvent.ClickedAdd -> addCategory()
+            else -> Unit
+        }
+    }
+
+    fun onDetailEvent(e: CategoryDetailEvent) {
+        _categoryDetailState.update { CategoryDetailReducer.reduce(it, e) }
+
+        when (e) {
+            CategoryDetailEvent.ClickedBack -> _uiEffect.tryEmit(UiEffect.NavigateBack)
+            CategoryDetailEvent.ClickedEdit -> _uiEffect.tryEmit(UiEffect.Navigate("categoryEdit"))
+            CategoryDetailEvent.ClickedDelete -> deleteCategory()
+            else -> Unit
+        }
+    }
+
+    fun onEditEvent(e: CategoryEditEvent) {
+        _categoryEditState.update { CategoryEditReducer.reduce(it, e) }
+
+        when (e) {
+            CategoryEditEvent.ClickedBack -> _uiEffect.tryEmit(UiEffect.NavigateBack)
+            CategoryEditEvent.ClickedUpdate -> updateCategory()
+            else -> Unit
+        }
+    }
 
     fun onManageEvent(e: CategoryManageEvent) {
         _categoryManageState.update { CategoryManageReducer.reduce(it, e) }
@@ -37,49 +88,53 @@ class CategoryViewModel @Inject constructor(private val categoryRepository: Cate
         when (e) {
             CategoryManageEvent.Init -> getAllCategories()
             CategoryManageEvent.ClickedBack -> _uiEffect.tryEmit(UiEffect.NavigateBack)
+            CategoryManageEvent.ClickedAdd -> _uiEffect.tryEmit(UiEffect.Navigate("categoryAdd"))
+            CategoryManageEvent.ClickedCategory -> _uiEffect.tryEmit(UiEffect.Navigate("categoryDetail"))
             else -> Unit
         }
     }
 
     /* 카테고리 추가 */
-    fun addCategory(category: Category) {
+    fun addCategory() {
         viewModelScope.launch {
             categoryRepository.insert(
-                category = category
+                category = categoryAddState.value.inputData
             )
 
             _uiEffect.emit(UiEffect.NavigateBack)
-            _uiEffect.emit(UiEffect.ShowToast("카테고리가 추가되었습니다."))
+            _uiEffect.emit(UiEffect.ShowToast("카테고리가 추가되었습니다"))
 
-            Log.d(TAG, "[addCategory] 카테고리 추가 성공\n")
+            Log.d(TAG, "[addCategory] 카테고리 추가 성공\n${categoryAddState.value.inputData}")
         }
     }
 
     /* 카테고리 수정 */
-    fun updateCategory(category: Category) {
+    fun updateCategory() {
         viewModelScope.launch {
             categoryRepository.update(
-                category = category
+                category = categoryEditState.value.inputData
             )
 
-            _uiEffect.emit(UiEffect.NavigateBack)
-            _uiEffect.emit(UiEffect.ShowToast("카테고리가 수정되었습니다."))
+            _categoryDetailState.update { it.copy(categoryInfo = categoryEditState.value.inputData) }
 
-            Log.d(TAG, "[updateCategory] 카테고리 수정 성공\n")
+            _uiEffect.emit(UiEffect.NavigateBack)
+            _uiEffect.emit(UiEffect.ShowToast("카테고리가 수정되었습니다"))
+
+            Log.d(TAG, "[updateCategory] 카테고리 수정 성공\n${categoryEditState.value.inputData}")
         }
     }
 
     /* 카테고리 삭제 */
-    fun deleteCategory(category: Category) {
+    fun deleteCategory() {
         viewModelScope.launch {
             categoryRepository.delete(
-                category = category
+                category = categoryDetailState.value.categoryInfo
             )
 
             _uiEffect.emit(UiEffect.NavigateBack)
-            _uiEffect.emit(UiEffect.ShowToast("카테고리가 삭제되었습니다."))
+            _uiEffect.emit(UiEffect.ShowToast("카테고리가 삭제되었습니다"))
 
-            Log.d(TAG, "[deleteCategory] 카테고리 삭제 성공\n")
+            Log.d(TAG, "[deleteCategory] 카테고리 삭제 성공\n${categoryDetailState.value.categoryInfo}")
         }
     }
 

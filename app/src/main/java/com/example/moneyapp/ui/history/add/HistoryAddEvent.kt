@@ -10,7 +10,8 @@ enum class HistoryField {
 
 sealed interface HistoryAddEvent {
     // 초기화
-    data object Init: HistoryAddEvent
+    data object InitFirst: HistoryAddEvent
+    data object InitLast: HistoryAddEvent
 
     // 내역 필드 값 변경 이벤트
     data class ChangedValueWith(

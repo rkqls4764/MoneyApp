@@ -1,23 +1,18 @@
 package com.example.moneyapp.ui.history.add
 
 import com.example.moneyapp.data.entity.Category
-import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.data.entity.TransactionWithCategory
 import java.time.LocalDateTime
 
 object HistoryAddReducer {
     fun reduce(s: HistoryAddState, e: HistoryAddEvent): HistoryAddState = when (e) {
-        HistoryAddEvent.Init -> handleInit()
+        HistoryAddEvent.InitLast -> HistoryAddState()
         is HistoryAddEvent.ChangedValueWith -> handleChangedValue(s, e.field, e.value)
         is HistoryAddEvent.ChangedTypeWith -> handleChangedType(s, e.type)
         is HistoryAddEvent.ChangedDateWith -> handleChangedDate(s, e.date)
         is HistoryAddEvent.ChangedCategoryWith -> handleChangedCategory(s, e.category)
         else -> s
-    }
-
-    private fun handleInit(): HistoryAddState {
-        return HistoryAddState()
     }
 
     private val historyUpdaters: Map<HistoryField, (TransactionWithCategory, String) -> TransactionWithCategory> =
@@ -40,7 +35,7 @@ object HistoryAddReducer {
         state: HistoryAddState,
         type: TransactionType
     ): HistoryAddState {
-        return state.copy(inputData = state.inputData.copy(transaction = state.inputData.transaction.copy(type = type)))
+        return state.copy(inputData = state.inputData.copy(transaction = state.inputData.transaction.copy(type = type, categoryId = null)), selectedCategoryName = "")
     }
 
     private fun handleChangedDate(
