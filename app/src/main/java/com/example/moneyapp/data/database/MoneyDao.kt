@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.example.moneyapp.data.entity.CategoryStat
 import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.data.entity.TransactionWithCategory
@@ -71,9 +72,23 @@ interface MoneyDao {
     ): Flow<List<TransactionWithCategory>>
 
 
-    // 검색 결과 통계용 (기간+카테고리별 지출/수입/총계)
-
-    // 추후 통계 기능 추가
+    // 검색 결과 통계용 (기간+카테고리별 총합)
+    @Query("""
+        SELECT
+            c.id as categoryId,
+            c.name as categoryName,
+            t.type,
+            SUM(t.amount) as totalAmount
+        FROM transaction_table t
+        LEFT JOIN category_table c ON t.categoryId = c.id
+        WHERE (:startDate IS NULL OR t.date >= :startDate)
+        AND (:endDate IS NULL OR t.date <= :endDate)
+        GROUP BY t.categoryId
+    """)
+    fun getCategoryStats(
+        startDate: LocalDateTime?,
+        endDate: LocalDateTime?
+    ): Flow<List<CategoryStat>>
 
 
 
