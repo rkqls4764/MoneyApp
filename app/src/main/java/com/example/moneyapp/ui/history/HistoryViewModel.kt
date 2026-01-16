@@ -82,7 +82,7 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
         viewModelScope.launch {
             val amount = historyAddState.value.inputData.transaction.amount
             if (amount <= 0) {
-                _uiEffect.emit(UiEffect.ShowToast("금액을 1원 이상 입력해주세요."))
+                _uiEffect.emit(UiEffect.ShowToast("금액을 1원 이상 입력해주세요"))
                 return@launch
             }
 
@@ -91,7 +91,7 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
             )
 
             _uiEffect.emit(UiEffect.NavigateBack)
-            _uiEffect.emit(UiEffect.ShowToast("내역이 추가되었습니다."))
+            _uiEffect.emit(UiEffect.ShowToast("내역이 추가되었습니다"))
 
             Log.d(TAG, "[addHistory] 내역 추가 성공\n${historyAddState.value.inputData.transaction}")
         }
@@ -107,7 +107,7 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
             _historyDetailState.update { it.copy(historyInfo = historyEditState.value.inputData) }
 
             _uiEffect.emit(UiEffect.NavigateBack)
-            _uiEffect.emit(UiEffect.ShowToast("내역이 수정되었습니다."))
+            _uiEffect.emit(UiEffect.ShowToast("내역이 수정되었습니다"))
 
             Log.d(TAG, "[updateHistory] 내역 수정 성공\n${historyEditState.value.inputData.transaction}")
         }
@@ -121,7 +121,7 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
             )
 
             _uiEffect.emit(UiEffect.NavigateBack)
-            _uiEffect.emit(UiEffect.ShowToast("내역이 삭제되었습니다."))
+            _uiEffect.emit(UiEffect.ShowToast("내역이 삭제되었습니다"))
 
             Log.d(TAG, "[deleteHistory] 내역 삭제 성공\n${historyDetailState.value.historyInfo.transaction}")
         }

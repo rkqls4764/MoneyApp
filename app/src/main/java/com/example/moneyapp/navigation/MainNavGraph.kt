@@ -8,6 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.moneyapp.ui.category.CategoryViewModel
 import com.example.moneyapp.ui.category.add.CategoryAddScreen
+import com.example.moneyapp.ui.category.detail.CategoryDetailScreen
+import com.example.moneyapp.ui.category.edit.CategoryEditScreen
 import com.example.moneyapp.ui.category.manage.CategoryManageScreen
 import com.example.moneyapp.ui.effect.CollectUiEffect
 import com.example.moneyapp.ui.history.HistoryViewModel
@@ -41,6 +43,8 @@ fun MainNavGraph(navController: NavHostController = rememberNavController()) {
         composable("historyEdit") { HistoryEditScreen(historyViewModel) }                       // 내역 수정 화면
 
         composable("categoryAdd") { CategoryAddScreen(categoryViewModel) }                      // 카테고리 추가 화면
+        composable("categoryDetail") { CategoryDetailScreen(categoryViewModel) }                // 카테고리 상세 화면
+        composable("categoryEdit") { CategoryEditScreen(categoryViewModel) }                    // 카테고리 수정 화면
         composable("categoryManage") { CategoryManageScreen(categoryViewModel) }                // 카테고리 관리 화면
     }
 }

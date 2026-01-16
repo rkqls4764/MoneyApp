@@ -253,7 +253,7 @@ fun EditTypeBar(
 
 /* 내역 종류 선택 아이템 */
 @Composable
-private fun TypeSelectorItem(
+fun TypeSelectorItem(
     selected: TransactionType,
     onSelected: (TransactionType) -> Unit
 ) {
