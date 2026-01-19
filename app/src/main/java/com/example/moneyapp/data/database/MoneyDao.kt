@@ -75,8 +75,8 @@ interface MoneyDao {
     // 검색 결과 통계용 (기간+카테고리별 총합)
     @Query("""
         SELECT
-            c.id as categoryId,
-            c.name as categoryName,
+            t.categoryId as categoryId,
+            COALESCE(c.name, '분류없음') as categoryName, -- COALESCE : NULL이면 뒤에꺼 리턴
             t.type,
             SUM(t.amount) as totalAmount
         FROM transaction_table t
