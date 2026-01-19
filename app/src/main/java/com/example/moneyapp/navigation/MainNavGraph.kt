@@ -18,33 +18,36 @@ import com.example.moneyapp.ui.history.detail.HistoryDetailScreen
 import com.example.moneyapp.ui.history.edit.HistoryEditScreen
 import com.example.moneyapp.ui.home.HomeScreen
 import com.example.moneyapp.ui.home.calendar.CalendarViewModel
+import com.example.moneyapp.ui.home.statistic.StatisticViewModel
 
 @Composable
 fun MainNavGraph(navController: NavHostController = rememberNavController()) {
     val calendarViewModel: CalendarViewModel = hiltViewModel()
     val historyViewModel: HistoryViewModel = hiltViewModel()
     val categoryViewModel: CategoryViewModel = hiltViewModel()
+    val statisticViewModel: StatisticViewModel = hiltViewModel()
 
     CollectUiEffect(
         navController = navController,
         calendarViewModel.uiEffect,
         historyViewModel.uiEffect,
-        categoryViewModel.uiEffect
+        categoryViewModel.uiEffect,
+        statisticViewModel.uiEffect
     )
 
     NavHost(
         navController = navController,
         startDestination = "home"
     ) {
-        composable("home") { HomeScreen(navController, calendarViewModel, historyViewModel) }   // 홈 화면
+        composable("home") { HomeScreen(navController, calendarViewModel, historyViewModel, statisticViewModel) }   // 홈 화면
 
-        composable("historyAdd") { HistoryAddScreen(historyViewModel) }                         // 내역 추가 화면
-        composable("historyDetail") { HistoryDetailScreen(historyViewModel) }                   // 내역 상세 화면
-        composable("historyEdit") { HistoryEditScreen(historyViewModel) }                       // 내역 수정 화면
+        composable("historyAdd") { HistoryAddScreen(historyViewModel) }         // 내역 추가 화면
+        composable("historyDetail") { HistoryDetailScreen(historyViewModel) }   // 내역 상세 화면
+        composable("historyEdit") { HistoryEditScreen(historyViewModel) }       // 내역 수정 화면
 
-        composable("categoryAdd") { CategoryAddScreen(categoryViewModel) }                      // 카테고리 추가 화면
-        composable("categoryDetail") { CategoryDetailScreen(categoryViewModel) }                // 카테고리 상세 화면
-        composable("categoryEdit") { CategoryEditScreen(categoryViewModel) }                    // 카테고리 수정 화면
-        composable("categoryManage") { CategoryManageScreen(categoryViewModel) }                // 카테고리 관리 화면
+        composable("categoryAdd") { CategoryAddScreen(categoryViewModel) }          // 카테고리 추가 화면
+        composable("categoryDetail") { CategoryDetailScreen(categoryViewModel) }    // 카테고리 상세 화면
+        composable("categoryEdit") { CategoryEditScreen(categoryViewModel) }        // 카테고리 수정 화면
+        composable("categoryManage") { CategoryManageScreen(categoryViewModel) }    // 카테고리 관리 화면
     }
 }

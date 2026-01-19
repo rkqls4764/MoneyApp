@@ -123,7 +123,8 @@ fun BasicDateEditBar(
     name: String,
     value: LocalDateTime,
     onValueChange: (LocalDateTime) -> Unit,
-    isRequired: Boolean = false
+    isRequired: Boolean = false,
+    enabled: Boolean = true
 ) {
     var openDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -157,7 +158,8 @@ fun BasicDateEditBar(
             modifier = Modifier.fillMaxWidth(),
             value = value.toYmdeString(),
             icon = Icons.Default.CalendarToday,
-            onClick = { openDialog = true }
+            onClick = { openDialog = true },
+            enabled = enabled
         )
     }
 }

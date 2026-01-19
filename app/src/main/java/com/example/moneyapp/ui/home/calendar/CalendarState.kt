@@ -10,8 +10,8 @@ data class CalendarState(
     val selectedDate: LocalDate = LocalDate.now(),                                      // 선택한 날짜
     val openSheet: Boolean = false,                                                     // 내역 목록 바텀 시트 열림 여부
     val monthSummary: AmountSummary = AmountSummary(),                                  // 월별 요약
-    val dailySummaries: Map<LocalDate, AmountSummary> = emptyMap(),                 // 일별 요약
-    val dailyHistories: Map<LocalDate, List<TransactionWithCategory>> = emptyMap()  // 일별 내역 목록
+    val dailySummaries: Map<LocalDate, AmountSummary> = emptyMap(),                     // 일별 요약
+    val dailyHistories: Map<LocalDate, List<TransactionWithCategory>> = emptyMap()      // 일별 내역 목록
 )
 
 data class AmountSummary(

@@ -56,6 +56,7 @@ fun IconOutlinedTextField(
     value: String,
     icon: ImageVector,
     onClick: () -> Unit,
+    enabled: Boolean = true
 ) {
     Box(modifier = modifier) {
         OutlinedTextField(
@@ -71,7 +72,8 @@ fun IconOutlinedTextField(
                     imageVector = icon,
                     contentDescription = "캘린더 열기"
                 )
-            }
+            },
+            enabled = enabled
         )
 
         Box(
@@ -80,7 +82,7 @@ fun IconOutlinedTextField(
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
-                ) { onClick() }
+                ) { if (enabled) onClick() }
         )
     }
 }
@@ -92,5 +94,6 @@ fun BasicOutlinedTextFieldColors() = OutlinedTextFieldDefaults.colors(
     focusedContainerColor = Color.White,
     unfocusedBorderColor = MainBlack.copy(alpha = 0.5f),
     focusedBorderColor = MainBlack.copy(alpha = 0.5f),
-    cursorColor = MainBlack.copy(alpha = 0.5f)
+    cursorColor = MainBlack.copy(alpha = 0.5f),
+    disabledContainerColor = MainBlack.copy(alpha = 0.2f)
 )

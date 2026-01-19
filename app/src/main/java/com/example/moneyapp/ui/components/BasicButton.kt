@@ -19,10 +19,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.moneyapp.ui.theme.BodyText
+import com.example.moneyapp.ui.theme.MainBlack
 import com.example.moneyapp.ui.theme.MainBlue
 import com.example.moneyapp.ui.theme.MainYellow
 
@@ -63,6 +66,25 @@ fun BasicButton(
             text = name,
             fontSize = BodyText,
             fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+/* 기본 텍스트 버튼 */
+@Composable
+fun BasicTextButton(
+    name: String,
+    onClick: () -> Unit
+) {
+    TextButton(
+        onClick = { onClick() }
+    ) {
+        Text(
+            text = name,
+            fontSize = BodyText,
+            fontWeight = FontWeight.Bold,
+            color = MainBlack.copy(alpha = 0.6f),
+            textDecoration = TextDecoration.Underline
         )
     }
 }
