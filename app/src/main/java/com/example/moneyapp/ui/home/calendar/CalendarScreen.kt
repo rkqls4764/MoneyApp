@@ -65,6 +65,7 @@ import com.example.moneyapp.ui.theme.TitleText
 import com.example.moneyapp.ui.theme.TodayBlockColor
 import com.example.moneyapp.util.formatMoney
 import com.example.moneyapp.util.toHmString
+import com.example.moneyapp.util.toYmString
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -119,6 +120,8 @@ private fun HistoriesBottomSheet(histories: List<TransactionWithCategory>?, summ
                 onEvent = onEvent
             )
 
+            Spacer(modifier = Modifier.height(10.dp))
+
             DailySummaryBar(
                 total = summary?.total ?: 0,
                 income = summary?.income ?: 0,
@@ -126,9 +129,9 @@ private fun HistoriesBottomSheet(histories: List<TransactionWithCategory>?, summ
             )
 
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(top = 10.dp),
+                modifier = Modifier.fillMaxSize().padding(top = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 if (histories.isNullOrEmpty()) {
                     item {
@@ -151,14 +154,14 @@ private fun HistoriesBottomSheet(histories: List<TransactionWithCategory>?, summ
 
 /* 내역 목록 아이템 */
 @Composable
-private fun HistoryItem(history: TransactionWithCategory, onClick: () -> Unit) {
+fun HistoryItem(history: TransactionWithCategory, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         border = BorderStroke(width = 0.5.dp, color = Color.LightGray),
         onClick = onClick
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().background(color = Color.White).padding(vertical = 14.dp, horizontal = 24.dp)
+            modifier = Modifier.fillMaxWidth().background(color = Color.White).padding(vertical = 18.dp, horizontal = 24.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -187,7 +190,7 @@ private fun HistoryItem(history: TransactionWithCategory, onClick: () -> Unit) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Text(
                 text = history.transaction.date.toHmString(),
@@ -345,9 +348,6 @@ private fun RowScope.SummaryItem(name: String, price: Long, color: Color) {
 /* 캘린더 */
 @Composable
 private fun Calendar(calendarState: CalendarState, onEvent: (CalendarEvent) -> Unit) {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM")
-    val ymStr = remember(calendarState.yearMonth) { calendarState.yearMonth.format(formatter) }
-
     Card(
         colors = (CardDefaults.cardColors(containerColor = Color.White)),
         shape = RoundedCornerShape(14.dp)
@@ -356,8 +356,9 @@ private fun Calendar(calendarState: CalendarState, onEvent: (CalendarEvent) -> U
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             YearMonthBar(
-                ymStr = ymStr,
-                onEvent = onEvent)
+                ymStr = calendarState.yearMonth.toYmString(),
+                onEvent = onEvent
+            )
 
             Spacer(modifier = Modifier.height(6.dp))
 

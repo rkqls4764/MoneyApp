@@ -11,6 +11,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -18,7 +19,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.example.moneyapp.ui.theme.MainBlack
 import com.example.moneyapp.ui.theme.MainRed
 import com.example.moneyapp.ui.theme.TitleText
@@ -29,7 +32,10 @@ import com.example.moneyapp.ui.theme.TitleText
 fun BasicTopBar(
     title: String,                      // 제목
     showNavIcon: Boolean = true,        // 뒤로 가기 아이콘 여부
+    actIcon: ImageVector? = null,       // 액션 아이콘
+    actTint: Color = Color.Black,       // 액션 아이콘 색상
     onClickNavIcon: () -> Unit = {},    // 뒤로 가기 아이콘 클릭 이벤트
+    onClickActIcon: () -> Unit = {}     // 액션 아이콘 클릭 이벤트
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -49,6 +55,21 @@ fun BasicTopBar(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "뒤로 가기 버튼"
+                    )
+                }
+            }
+        },
+        actions = {
+            if (actIcon != null) {
+                IconButton(
+                    onClick = {
+                        onClickActIcon()
+                    }
+                ) {
+                    Icon(
+                        imageVector = actIcon,
+                        contentDescription = "액션 버튼",
+                        tint = actTint
                     )
                 }
             }

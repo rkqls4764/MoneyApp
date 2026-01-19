@@ -4,6 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,11 +24,14 @@ import com.example.moneyapp.ui.home.calendar.CalendarScreen
 import com.example.moneyapp.ui.home.calendar.CalendarViewModel
 import com.example.moneyapp.ui.home.setting.SettingScreen
 import com.example.moneyapp.ui.home.statistic.StatisticScreen
+import com.example.moneyapp.ui.home.statistic.StatisticViewModel
+import com.example.moneyapp.ui.theme.MainBlack
 
 /* 홈 화면 */
 @Composable
-fun HomeScreen(navController: NavController, calendarViewModel: CalendarViewModel, historyViewModel: HistoryViewModel) {
+fun HomeScreen(navController: NavController, calendarViewModel: CalendarViewModel, historyViewModel: HistoryViewModel, statisticViewModel: StatisticViewModel) {
     var showScreenNum by rememberSaveable { mutableStateOf(1) }  // 출력 화면
+    var isFilterClicked by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -36,7 +42,11 @@ fun HomeScreen(navController: NavController, calendarViewModel: CalendarViewMode
                     2 -> { "설정" }
                     else -> ""
                 },
-                showNavIcon = false
+                showNavIcon = false,
+                actIcon = if (showScreenNum == 0) Icons.Default.FilterAlt else null,
+                onClickActIcon = {
+                    if (showScreenNum == 0) isFilterClicked = true
+                }
             )
         },
         bottomBar = {
@@ -61,7 +71,7 @@ fun HomeScreen(navController: NavController, calendarViewModel: CalendarViewMode
                 .background(color = Color.White)
         ) {
             when (showScreenNum) {
-                0 -> { StatisticScreen(navController = navController) }
+                0 -> { StatisticScreen(statisticViewModel = statisticViewModel, isFilterClicked = isFilterClicked, onDismiss = { isFilterClicked = false }) }
                 1 -> { CalendarScreen(calendarViewModel = calendarViewModel, historyViewModel = historyViewModel) }
                 2 -> { SettingScreen(navController = navController) }
             }
