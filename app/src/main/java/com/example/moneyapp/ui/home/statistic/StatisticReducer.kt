@@ -1,5 +1,6 @@
 package com.example.moneyapp.ui.home.statistic
 
+import android.util.Log
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.util.toYDisplayString
@@ -120,7 +121,7 @@ object StatisticReducer {
         state: StatisticState,
         categoryInfo: Category
     ): StatisticState {
-        val categoryIds = listOf(categoryInfo.id)
+        val categoryIds = listOf(if (categoryInfo.id == 0.toLong()) -1L else categoryInfo.id)
         return state.copy(query = state.query.copy(categoryIds = categoryIds))
     }
 
