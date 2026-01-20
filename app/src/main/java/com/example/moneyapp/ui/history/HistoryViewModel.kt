@@ -100,6 +100,12 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
     /* 내역 수정 */
     fun updateHistory() {
         viewModelScope.launch {
+            val amount = historyEditState.value.inputData.transaction.amount
+            if (amount <= 0) {
+                _uiEffect.emit(UiEffect.ShowToast("금액을 1원 이상 입력해주세요"))
+                return@launch
+            }
+
             moneyRepository.update(
                 transaction = historyEditState.value.inputData.transaction
             )
