@@ -105,7 +105,7 @@ private fun HistoryEditContent(historyEditState: HistoryEditState, onEvent: (His
 
         BasicNumberEditBar(
             name = "금액",
-            value = historyEditState.inputData.transaction.amount.toString(),
+            value = if (historyEditState.inputData.transaction.amount == 0L) "" else historyEditState.inputData.transaction.amount.toString(),
             onValueChange = { onEvent(HistoryEditEvent.ChangedValueWith(HistoryField.AMOUNT, it)) },
             isRequired = true
         )
