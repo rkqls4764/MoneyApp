@@ -49,7 +49,7 @@ import com.example.moneyapp.ui.theme.CaptionText
 
 @Composable
 fun PieChart(
-    data: List<Int>,
+    data: List<Float>,
     colors: List<Color>,
     radiusOuter: Dp = 140.dp,
     chartBarWidth: Dp = 35.dp,
@@ -121,7 +121,7 @@ fun PieChart(
 
 @Composable
 fun DetailsPieChart(
-    data: Map<Category, Int>,
+    data: Map<Category, Float>,
     colors: List<Color>,
     onClick: (Category) -> Unit
 ) {
@@ -140,7 +140,7 @@ fun DetailsPieChart(
 
 @Composable
 fun DetailsPieChartItem(
-    data: Pair<String, Int>,
+    data: Pair<String, Float>,
     color: Color,
     onClick: () -> Unit
 ) {
