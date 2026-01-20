@@ -16,6 +16,7 @@ object StatisticReducer {
         is StatisticEvent.ClickedCategoryWith -> handleClickedCategory(s, e.category)
         is StatisticEvent.SelectedPeriodWith -> handleSelectedPeriod(s, e.period)
         is StatisticEvent.ChangedDateWith -> handleChangedDate(s, e.type, e.value)
+        StatisticEvent.ClickedInitFilter -> StatisticState()
         else -> s
     }
 

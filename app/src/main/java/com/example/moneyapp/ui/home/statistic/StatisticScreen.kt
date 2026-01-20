@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,6 +46,7 @@ import com.example.moneyapp.ui.components.BasicTextButton
 import com.example.moneyapp.ui.components.DetailsPieChart
 import com.example.moneyapp.ui.components.EmptyState
 import com.example.moneyapp.ui.components.PieChart
+import com.example.moneyapp.ui.components.WrapBottomSheet
 import com.example.moneyapp.ui.history.add.TypeSelectorItem
 import com.example.moneyapp.ui.home.calendar.HistoryItem
 import com.example.moneyapp.ui.theme.MainBlack
@@ -78,7 +80,7 @@ fun StatisticScreen(statisticViewModel: StatisticViewModel, isFilterClicked: Boo
     }
 
     if (isFilterClicked) {
-        BasicBottomSheet(
+        WrapBottomSheet(
             content = {
                 FilterBottomSheetContent(
                     statisticState = statisticState,
@@ -89,9 +91,9 @@ fun StatisticScreen(statisticViewModel: StatisticViewModel, isFilterClicked: Boo
         )
     }
 
-//    LaunchedEffect(Unit) {
-//        onEvent(StatisticEvent.Init)
-//    }
+    LaunchedEffect(Unit) {
+        onEvent(StatisticEvent.Init)
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
@@ -142,7 +144,7 @@ fun StatisticScreen(statisticViewModel: StatisticViewModel, isFilterClicked: Boo
                 Spacer(modifier = Modifier.height(30.dp))
 
                 DetailsPieChart(
-                    data = statisticState.expenseData,
+                    data = if (statisticState.query.type == TransactionType.EXPENSE) statisticState.expenseData else statisticState.incomeData,
                     colors = if (statisticState.query.type == TransactionType.EXPENSE) expenseColors else incomeColors,
                     onClick = {
                         openSheet = true
@@ -264,7 +266,7 @@ private fun FilterBottomSheetContent(statisticState: StatisticState, onEvent: (S
         ) {
             BasicTextButton(
                 name = "초기화",
-                onClick = {}
+                onClick = { onEvent(StatisticEvent.ClickedInitFilter) }
             )
         }
     }
