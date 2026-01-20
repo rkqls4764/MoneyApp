@@ -57,7 +57,11 @@ interface MoneyDao {
         WHERE (:startDate IS NULL OR date >= :startDate)
         AND (:endDate IS NULL OR date <= :endDate)
         AND (:useTypeFilter = 0 OR type IN (:types))
-        AND (:useCategoryFilter = 0 OR categoryId IN (:categoryIds))
+        AND (
+            :useCategoryFilter = 0 
+            OR categoryId IN (:categoryIds)
+            OR (:includeNullCategory = 1 AND categoryId IS NULL)
+        )
         AND (:keyword IS NULL OR description LIKE '%' || :keyword || '%' OR memo LIKE '%' || :keyword || '%')
         ORDER BY date DESC
     """)
@@ -68,6 +72,7 @@ interface MoneyDao {
         useTypeFilter: Boolean,         // 타입이 선택됐는지 (false인 경우 전체 조회)
         categoryIds: List<Long>,        // 다중 선택 가능
         useCategoryFilter: Boolean,     // 카테고리가 선택됐는지 (false인 경우 전체 조회)
+        includeNullCategory: Boolean,   // '분류없음' 카테고리를 선택했는지 (true인 경우 categoryId = NULL도 포함)
         keyword: String?
     ): Flow<List<TransactionWithCategory>>
 
