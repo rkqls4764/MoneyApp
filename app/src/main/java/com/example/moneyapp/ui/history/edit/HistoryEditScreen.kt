@@ -54,7 +54,7 @@ fun HistoryEditScreen(historyViewModel: HistoryViewModel) {
                 .background(color = Color.White)
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 10.dp)
+                .padding(bottom = 30.dp)
                 .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
             verticalArrangement = Arrangement.SpaceBetween
         ) {

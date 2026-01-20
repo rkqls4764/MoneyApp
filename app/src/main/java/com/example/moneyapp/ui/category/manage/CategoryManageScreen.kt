@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -56,9 +57,13 @@ fun CategoryManageScreen(categoryViewModel: CategoryViewModel) {
             )
         },
         floatingActionButton = {
-            BasicFloatingButton(
-                onClick = { onEvent(CategoryManageEvent.ClickedAdd) }
-            )
+            Box(
+                modifier = Modifier.padding(bottom = 20.dp)
+            ) {
+                BasicFloatingButton(
+                    onClick = { onEvent(CategoryManageEvent.ClickedAdd) }
+                )
+            }
         }
     ) { paddingValues ->
         Column(
@@ -67,7 +72,7 @@ fun CategoryManageScreen(categoryViewModel: CategoryViewModel) {
                 .background(color = Color.White)
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 10.dp)
+                .padding(bottom = 30.dp)
                 .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) }
         ) {
             TypeSelectorItem(
