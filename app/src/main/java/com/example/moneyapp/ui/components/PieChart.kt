@@ -106,7 +106,7 @@ fun PieChart(
 
                 floatValue.forEachIndexed { index, value ->
                     drawArc(
-                        color = colors[index],
+                        color = colors[index % colors.size],
                         startAngle = lastValue,
                         sweepAngle = value,
                         useCenter = false,
@@ -131,7 +131,7 @@ fun DetailsPieChart(
         data.entries.forEachIndexed { index, entry ->
             DetailsPieChartItem(
                 data = Pair(entry.key.name, entry.value),
-                color = colors[index],
+                color = colors[index % colors.size],
                 onClick = { onClick(entry.key) }
             )
         }
