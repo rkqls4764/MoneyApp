@@ -25,7 +25,7 @@ object HistoryEditReducer {
     private val historyUpdaters: Map<HistoryField, (TransactionWithCategory, String) -> TransactionWithCategory> =
         mapOf(
             HistoryField.NAME        to { s, v -> s.copy(transaction = s.transaction.copy(description = v)) },
-            HistoryField.AMOUNT      to { s, v -> s.copy(transaction = s.transaction.copy(amount = v.toLong())) },
+            HistoryField.AMOUNT      to { s, v -> s.copy(transaction = s.transaction.copy(amount = v.toLongOrNull() ?: 0L)) },
             HistoryField.MEMO        to { s, v -> s.copy(transaction = s.transaction.copy(memo = v)) }
         )
 
