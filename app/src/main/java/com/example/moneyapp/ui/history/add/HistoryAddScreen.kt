@@ -24,7 +24,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -90,6 +92,7 @@ fun HistoryAddScreen(historyViewModel: HistoryViewModel) {
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 30.dp)
+                .verticalScroll(rememberScrollState())
                 .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
             verticalArrangement = Arrangement.SpaceBetween
         ) {
