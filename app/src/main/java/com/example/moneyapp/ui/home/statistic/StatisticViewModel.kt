@@ -7,6 +7,7 @@ import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.data.repository.MoneyRepository
 import com.example.moneyapp.ui.effect.UiEffect
+import com.example.moneyapp.ui.home.calendar.CalendarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,6 +42,7 @@ class StatisticViewModel @Inject constructor(private val moneyRepository: MoneyR
             is StatisticEvent.ClickedCategoryWith -> searchHistories()
             is StatisticEvent.SelectedPeriodWith -> getCategoryStatistic()
             StatisticEvent.ClickedInitFilter -> getCategoryStatistic()
+            StatisticEvent.ClickedHistory -> _uiEffect.tryEmit(UiEffect.Navigate("historyDetail"))
             else -> Unit
         }
     }

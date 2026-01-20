@@ -48,7 +48,9 @@ import com.example.moneyapp.ui.components.DetailsPieChart
 import com.example.moneyapp.ui.components.EmptyState
 import com.example.moneyapp.ui.components.PieChart
 import com.example.moneyapp.ui.components.WrapBottomSheet
+import com.example.moneyapp.ui.history.HistoryViewModel
 import com.example.moneyapp.ui.history.add.TypeSelectorItem
+import com.example.moneyapp.ui.history.detail.HistoryDetailEvent
 import com.example.moneyapp.ui.theme.BodyText
 import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.ui.theme.MainBlack
@@ -63,7 +65,7 @@ import com.example.moneyapp.util.toYmdHmString
 
 /* 통계 화면 */
 @Composable
-fun StatisticScreen(statisticViewModel: StatisticViewModel, isFilterClicked: Boolean, onDismiss: () -> Unit) {
+fun StatisticScreen(statisticViewModel: StatisticViewModel, historyViewModel: HistoryViewModel, isFilterClicked: Boolean, onDismiss: () -> Unit) {
     val onEvent = statisticViewModel::onEvent
     val statisticState by statisticViewModel.statisticState.collectAsState()
 
@@ -77,7 +79,8 @@ fun StatisticScreen(statisticViewModel: StatisticViewModel, isFilterClicked: Boo
                 HistoriesBottomSheetContent(
                     histories = statisticState.histories.filter { it.transaction.type == statisticState.query.type },
                     onClick = {
-
+                        historyViewModel.onDetailEvent(HistoryDetailEvent.InitWith(it))
+                        onEvent(StatisticEvent.ClickedHistory)
                         openSheet = false
                     }
                 )

@@ -71,7 +71,7 @@ fun HomeScreen(navController: NavController, calendarViewModel: CalendarViewMode
                 .background(color = Color.White)
         ) {
             when (showScreenNum) {
-                0 -> { StatisticScreen(statisticViewModel = statisticViewModel, isFilterClicked = isFilterClicked, onDismiss = { isFilterClicked = false }) }
+                0 -> { StatisticScreen(statisticViewModel = statisticViewModel, historyViewModel = historyViewModel, isFilterClicked = isFilterClicked, onDismiss = { isFilterClicked = false }) }
                 1 -> { CalendarScreen(calendarViewModel = calendarViewModel, historyViewModel = historyViewModel) }
                 2 -> { SettingScreen(navController = navController) }
             }
