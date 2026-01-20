@@ -68,8 +68,6 @@ import com.example.moneyapp.util.toHmString
 import com.example.moneyapp.util.toYmString
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 
 /* 캘린더 화면 */
 @Composable
@@ -552,7 +550,7 @@ private fun RowScope.DayBlock(date: LocalDate, isToday: Boolean, summary: Amount
                 verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
-                    text = "${summary?.income ?: 0}",
+                    text = "${if (summary == null || summary.income == 0.toLong()) "" else summary.income}",
                     fontSize = CalendarText,
                     color = MainBlue,
                     maxLines = 1,
@@ -562,7 +560,7 @@ private fun RowScope.DayBlock(date: LocalDate, isToday: Boolean, summary: Amount
                 )
 
                 Text(
-                    text = "${summary?.expense ?: 0}",
+                    text = "${if (summary == null || summary.expense == 0.toLong()) "" else summary.expense}",
                     fontSize = CalendarText,
                     color = MainRed,
                     maxLines = 1,
@@ -571,15 +569,15 @@ private fun RowScope.DayBlock(date: LocalDate, isToday: Boolean, summary: Amount
                     modifier = Modifier.padding(vertical = 2.dp)
                 )
 
-                Text(
-                    text = "${summary?.total ?: 0}",
-                    fontSize = CalendarText,
-                    color = MainBlack,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    lineHeight = CalendarText * 1f,
-                    modifier = Modifier.padding(vertical = 2.dp)
-                )
+//                Text(
+//                    text = "${summary?.total ?: 0}",
+//                    fontSize = CalendarText,
+//                    color = MainBlack,
+//                    maxLines = 1,
+//                    overflow = TextOverflow.Ellipsis,
+//                    lineHeight = CalendarText * 1f,
+//                    modifier = Modifier.padding(vertical = 2.dp)
+//                )
             }
         }
     }

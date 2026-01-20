@@ -3,12 +3,9 @@ package com.example.moneyapp.ui.category
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.repository.CategoryRepository
-import com.example.moneyapp.data.repository.MoneyRepository
 import com.example.moneyapp.ui.category.add.CategoryAddEvent
 import com.example.moneyapp.ui.category.add.CategoryAddReducer
-import com.example.moneyapp.ui.category.add.CategoryAddScreen
 import com.example.moneyapp.ui.category.add.CategoryAddState
 import com.example.moneyapp.ui.category.detail.CategoryDetailEvent
 import com.example.moneyapp.ui.category.detail.CategoryDetailReducer
@@ -20,10 +17,6 @@ import com.example.moneyapp.ui.category.manage.CategoryManageEvent
 import com.example.moneyapp.ui.category.manage.CategoryManageReducer
 import com.example.moneyapp.ui.category.manage.CategoryManageState
 import com.example.moneyapp.ui.effect.UiEffect
-import com.example.moneyapp.ui.history.HistoryTarget
-import com.example.moneyapp.ui.history.detail.HistoryDetailEvent
-import com.example.moneyapp.ui.history.edit.HistoryEditEvent
-import com.example.moneyapp.ui.history.edit.HistoryEditReducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

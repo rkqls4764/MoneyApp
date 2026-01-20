@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.example.moneyapp.data.database.AppDatabase
 import com.example.moneyapp.data.database.CategoryDao
 import com.example.moneyapp.data.database.MoneyDao
-import com.example.moneyapp.data.repository.MoneyRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

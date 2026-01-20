@@ -26,7 +26,6 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.util.Date
 
 /* 기본 디알로그 */
 @Composable

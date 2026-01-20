@@ -25,8 +25,6 @@ import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.util.toHmString
 import com.example.moneyapp.util.toYmdeString
 import java.time.LocalDateTime
-import java.util.Date
-import kotlin.math.max
 
 /* 기본 정보 수정 바 */
 @Composable

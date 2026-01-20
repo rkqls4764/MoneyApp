@@ -19,10 +19,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import javax.inject.Inject
-import kotlin.math.exp
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(private val moneyRepository: MoneyRepository) : ViewModel() {

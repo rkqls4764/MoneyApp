@@ -41,4 +41,7 @@ sealed interface StatisticEvent {
 
     /* 필터 초기화 버튼 클릭 이벤트 */
     data object ClickedInitFilter: StatisticEvent
+
+    /* 내역 아이템 클릭 이벤트 */
+    data object ClickedHistory: StatisticEvent
 }

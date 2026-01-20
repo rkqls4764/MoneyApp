@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -19,15 +18,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.example.moneyapp.ui.category.CategoryViewModel
-import com.example.moneyapp.ui.category.manage.CategoryManageEvent
 import com.example.moneyapp.ui.components.BasicButton
 import com.example.moneyapp.ui.components.BasicEditBar
-import com.example.moneyapp.ui.components.BasicFloatingButton
-import com.example.moneyapp.ui.components.BasicNumberEditBar
 import com.example.moneyapp.ui.components.BasicTopBar
 import com.example.moneyapp.ui.history.add.EditTypeBar
-import com.example.moneyapp.ui.history.add.HistoryAddEvent
-import com.example.moneyapp.ui.history.add.HistoryField
 
 /* 카테고리 추가 화면 */
 @Composable

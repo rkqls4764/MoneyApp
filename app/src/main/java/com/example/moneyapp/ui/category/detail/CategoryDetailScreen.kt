@@ -27,7 +27,6 @@ import com.example.moneyapp.ui.components.BasicButton
 import com.example.moneyapp.ui.components.BasicDialog
 import com.example.moneyapp.ui.components.BasicInfoBar
 import com.example.moneyapp.ui.components.DeleteIconTopBar
-import com.example.moneyapp.ui.history.edit.HistoryEditEvent
 
 /* 카테고리 상세 화면 */
 @Composable

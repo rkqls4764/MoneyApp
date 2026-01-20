@@ -5,7 +5,6 @@ import com.example.moneyapp.data.entity.TransactionType
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Date
 
 // 직접 호출x Room이 알아서 사용
 class Converters {
