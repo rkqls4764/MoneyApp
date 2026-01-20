@@ -44,10 +44,10 @@ object StatisticReducer {
         }
 
         val newDateStr = when (state.query.period) {
-            PeriodType.YEAR -> state.query.startDate.toYDisplayString()
-            PeriodType.MONTH -> state.query.startDate.toYmDisplayString()
-            PeriodType.WEEK -> state.query.startDate.toYmWeekDisplayString()
-            PeriodType.CUSTOM -> "${state.query.startDate.toYmdString()} ~ ${state.query.endDate.toYmdString()}"
+            PeriodType.YEAR -> newStartDate.toYDisplayString()
+            PeriodType.MONTH -> newStartDate.toYmDisplayString()
+            PeriodType.WEEK -> newStartDate.toYmWeekDisplayString()
+            PeriodType.CUSTOM -> "${newStartDate.toYmdString()} ~ ${newEndDate.toYmdString()}"
         }
 
         return state.copy(query = state.query.copy(startDate = newStartDate, endDate = newEndDate), dateStr = newDateStr)
@@ -87,10 +87,10 @@ object StatisticReducer {
         }
 
         val newDateStr = when (state.query.period) {
-            PeriodType.YEAR -> state.query.startDate.toYDisplayString()
-            PeriodType.MONTH -> state.query.startDate.toYmDisplayString()
-            PeriodType.WEEK -> state.query.startDate.toYmWeekDisplayString()
-            PeriodType.CUSTOM -> "${state.query.startDate.toYmdString()} ~ ${state.query.endDate.toYmdString()}"
+            PeriodType.YEAR -> newStartDate.toYDisplayString()
+            PeriodType.MONTH -> newStartDate.toYmDisplayString()
+            PeriodType.WEEK -> newStartDate.toYmWeekDisplayString()
+            PeriodType.CUSTOM -> "${newStartDate.toYmdString()} ~ ${newEndDate.toYmdString()}"
         }
 
         return state.copy(query = state.query.copy(startDate = newStartDate, endDate = newEndDate), dateStr = newDateStr)
@@ -100,7 +100,7 @@ object StatisticReducer {
         state: StatisticState,
         categoryInfo: Category
     ): StatisticState {
-        val categoryIds = state.query.categoryIds + categoryInfo.id
+        val categoryIds = listOf(categoryInfo.id)
         return state.copy(query = state.query.copy(categoryIds = categoryIds))
     }
 
