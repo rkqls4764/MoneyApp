@@ -12,12 +12,6 @@ fun YearMonth.toYmString(): String {
     return this.format(formatter)
 }
 
-/* LocalDateTime -> String (yyyy-MM) */
-fun LocalDateTime.toYmString(): String {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM", Locale.KOREAN)
-    return this.format(formatter)
-}
-
 /* LocalDateTime -> String (yyyy-MM-dd) */
 fun LocalDateTime.toYmdString(): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.KOREAN)
@@ -27,6 +21,12 @@ fun LocalDateTime.toYmdString(): String {
 /* LocalDateTime -> String (yyyy-MM-dd (E)) */
 fun LocalDateTime.toYmdeString(): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd (E)", Locale.KOREAN)
+    return this.format(formatter)
+}
+
+/* LocalDateTime -> String (yyyy-MM-dd HH:mm) */
+fun LocalDateTime.toYmdHmString(): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd  HH:mm", Locale.KOREAN)
     return this.format(formatter)
 }
 
