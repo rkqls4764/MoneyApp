@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,7 +24,6 @@ import com.example.moneyapp.ui.home.calendar.CalendarViewModel
 import com.example.moneyapp.ui.home.setting.SettingScreen
 import com.example.moneyapp.ui.home.statistic.StatisticScreen
 import com.example.moneyapp.ui.home.statistic.StatisticViewModel
-import com.example.moneyapp.ui.theme.MainBlack
 
 /* 홈 화면 */
 @Composable

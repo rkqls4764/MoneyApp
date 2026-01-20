@@ -60,7 +60,6 @@ import com.example.moneyapp.ui.theme.PieChartColor.expenseColors
 import com.example.moneyapp.ui.theme.PieChartColor.incomeColors
 import com.example.moneyapp.ui.theme.TitleText
 import com.example.moneyapp.util.formatMoney
-import com.example.moneyapp.util.toHmString
 import com.example.moneyapp.util.toYmdHmString
 
 /* 통계 화면 */

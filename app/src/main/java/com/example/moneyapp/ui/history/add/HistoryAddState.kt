@@ -5,7 +5,6 @@ import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.data.entity.TransactionWithCategory
 import java.time.LocalDateTime
-import java.util.Date
 
 data class HistoryAddState(
     val inputData: TransactionWithCategory = TransactionWithCategory(

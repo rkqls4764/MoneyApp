@@ -2,7 +2,6 @@ package com.example.moneyapp.ui.home.calendar
 
 import com.example.moneyapp.data.entity.TransactionWithCategory
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.YearMonth
 
 data class CalendarState(

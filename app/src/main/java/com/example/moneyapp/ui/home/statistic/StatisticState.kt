@@ -1,11 +1,9 @@
 package com.example.moneyapp.ui.home.statistic
 
-import androidx.compose.ui.graphics.Color
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.data.entity.TransactionWithCategory
 import com.example.moneyapp.util.toYmDisplayString
-import com.example.moneyapp.util.toYmString
 import java.time.LocalDateTime
 
 data class StatisticState(

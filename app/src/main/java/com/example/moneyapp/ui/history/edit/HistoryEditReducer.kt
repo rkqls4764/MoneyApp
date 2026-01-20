@@ -1,7 +1,6 @@
 package com.example.moneyapp.ui.history.edit
 
 import com.example.moneyapp.data.entity.Category
-import com.example.moneyapp.data.entity.MoneyTransaction
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.data.entity.TransactionWithCategory
 import com.example.moneyapp.ui.history.add.HistoryField

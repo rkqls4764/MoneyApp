@@ -1,6 +1,5 @@
 package com.example.moneyapp.ui.home.statistic
 
-import android.util.Log
 import com.example.moneyapp.data.entity.Category
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.util.toYDisplayString

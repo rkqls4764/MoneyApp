@@ -13,7 +13,6 @@ import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.data.entity.TransactionWithCategory
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
-import java.util.Date
 
 @Dao
 interface MoneyDao {
