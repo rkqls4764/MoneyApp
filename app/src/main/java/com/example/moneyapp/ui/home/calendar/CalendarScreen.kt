@@ -154,7 +154,7 @@ private fun HistoriesBottomSheet(histories: List<TransactionWithCategory>?, summ
 
 /* 내역 목록 아이템 */
 @Composable
-fun HistoryItem(history: TransactionWithCategory, onClick: () -> Unit) {
+private fun HistoryItem(history: TransactionWithCategory, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         border = BorderStroke(width = 0.5.dp, color = Color.LightGray),

@@ -38,4 +38,7 @@ sealed interface StatisticEvent {
         val type: DateType,
         val value: LocalDateTime
     ): StatisticEvent
+
+    /* 필터 초기화 버튼 클릭 이벤트 */
+    data object ClickedInitFilter: StatisticEvent
 }

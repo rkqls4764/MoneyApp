@@ -1,5 +1,6 @@
 package com.example.moneyapp.ui.home.statistic
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,23 +35,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.moneyapp.data.entity.TransactionType
 import com.example.moneyapp.data.entity.TransactionWithCategory
 import com.example.moneyapp.ui.components.BasicBottomSheet
-import com.example.moneyapp.ui.components.BasicButton
 import com.example.moneyapp.ui.components.BasicDateEditBar
 import com.example.moneyapp.ui.components.BasicDropdownEditBar
 import com.example.moneyapp.ui.components.BasicTextButton
 import com.example.moneyapp.ui.components.DetailsPieChart
 import com.example.moneyapp.ui.components.EmptyState
 import com.example.moneyapp.ui.components.PieChart
+import com.example.moneyapp.ui.components.WrapBottomSheet
 import com.example.moneyapp.ui.history.add.TypeSelectorItem
-import com.example.moneyapp.ui.home.calendar.HistoryItem
+import com.example.moneyapp.ui.theme.BodyText
+import com.example.moneyapp.ui.theme.CaptionText
 import com.example.moneyapp.ui.theme.MainBlack
+import com.example.moneyapp.ui.theme.MainBlue
+import com.example.moneyapp.ui.theme.MainRed
 import com.example.moneyapp.ui.theme.PieChartColor.expenseColors
 import com.example.moneyapp.ui.theme.PieChartColor.incomeColors
 import com.example.moneyapp.ui.theme.TitleText
+import com.example.moneyapp.util.formatMoney
+import com.example.moneyapp.util.toHmString
+import com.example.moneyapp.util.toYmdHmString
 
 /* 통계 화면 */
 @Composable
@@ -78,7 +87,7 @@ fun StatisticScreen(statisticViewModel: StatisticViewModel, isFilterClicked: Boo
     }
 
     if (isFilterClicked) {
-        BasicBottomSheet(
+        WrapBottomSheet(
             content = {
                 FilterBottomSheetContent(
                     statisticState = statisticState,
@@ -89,9 +98,9 @@ fun StatisticScreen(statisticViewModel: StatisticViewModel, isFilterClicked: Boo
         )
     }
 
-//    LaunchedEffect(Unit) {
-//        onEvent(StatisticEvent.Init)
-//    }
+    LaunchedEffect(Unit) {
+        onEvent(StatisticEvent.Init)
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
@@ -142,7 +151,7 @@ fun StatisticScreen(statisticViewModel: StatisticViewModel, isFilterClicked: Boo
                 Spacer(modifier = Modifier.height(30.dp))
 
                 DetailsPieChart(
-                    data = statisticState.expenseData,
+                    data = if (statisticState.query.type == TransactionType.EXPENSE) statisticState.expenseData else statisticState.incomeData,
                     colors = if (statisticState.query.type == TransactionType.EXPENSE) expenseColors else incomeColors,
                     onClick = {
                         openSheet = true
@@ -228,6 +237,57 @@ private fun HistoriesBottomSheetContent(histories: List<TransactionWithCategory>
     }
 }
 
+/* 내역 목록 아이템 */
+@Composable
+private fun HistoryItem(history: TransactionWithCategory, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        border = BorderStroke(width = 0.5.dp, color = Color.LightGray),
+        onClick = onClick
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth().background(color = Color.White).padding(vertical = 18.dp, horizontal = 24.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = if (history.category == null) history.transaction.description else "[${history.category.name}]  ${history.transaction.description}",
+                    color = MainBlack,
+                    fontSize = BodyText,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(0.55f)
+                )
+
+                Spacer(modifier = Modifier.weight(0.05f))
+
+                Text(
+                    text = if (history.transaction.type == TransactionType.INCOME) "+ ${formatMoney(history.transaction.amount)} 원" else "- ${formatMoney(history.transaction.amount)} 원",
+                    color = if (history.transaction.type == TransactionType.INCOME) MainBlue else MainRed,
+                    fontSize = BodyText,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.weight(0.4f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = history.transaction.date.toYmdHmString(),
+                color = MainBlack.copy(alpha = 0.5f),
+                fontSize = CaptionText,
+                textAlign = TextAlign.End,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
 /* 검색 기간 설정 바텀 시트 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -264,7 +324,7 @@ private fun FilterBottomSheetContent(statisticState: StatisticState, onEvent: (S
         ) {
             BasicTextButton(
                 name = "초기화",
-                onClick = {}
+                onClick = { onEvent(StatisticEvent.ClickedInitFilter) }
             )
         }
     }

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.round
 
 @HiltViewModel
 class StatisticViewModel @Inject constructor(private val moneyRepository: MoneyRepository) : ViewModel() {
@@ -35,7 +36,10 @@ class StatisticViewModel @Inject constructor(private val moneyRepository: MoneyR
             StatisticEvent.Init -> getCategoryStatistic()
             StatisticEvent.ClickedMoveNext -> getCategoryStatistic()
             StatisticEvent.ClickedMovePrev -> getCategoryStatistic()
+            is StatisticEvent.ChangedDateWith -> getCategoryStatistic()
             is StatisticEvent.ClickedCategoryWith -> searchHistories()
+            is StatisticEvent.SelectedPeriodWith -> getCategoryStatistic()
+            StatisticEvent.ClickedInitFilter -> getCategoryStatistic()
             else -> Unit
         }
     }
@@ -74,9 +78,9 @@ class StatisticViewModel @Inject constructor(private val moneyRepository: MoneyR
                 val expenseTotalSum = expenseData.sumOf { it.totalAmount }   // 지출 총합
                 val incomeTotalSum = incomeData.sumOf { it.totalAmount }     // 수입 총합
 
-                val newExpenseMap: Map<Category, Int> = if (expenseTotalSum == 0L) emptyMap() else {
-                    expenseData.associate { stat ->
-                        val percent = ((stat.totalAmount.toDouble() / expenseTotalSum) * 100).toInt()
+                val newExpenseMap: Map<Category, Float> = if (expenseTotalSum == 0L) emptyMap() else {
+                    expenseData.map { stat ->
+                        val percent = round((stat.totalAmount.toFloat() / expenseTotalSum.toFloat()) * 100f * 10) / 10f
 
                         Category(
                             id = stat.categoryId,
@@ -84,10 +88,13 @@ class StatisticViewModel @Inject constructor(private val moneyRepository: MoneyR
                             type = stat.type
                         ) to percent
                     }
+                        .sortedByDescending { it.second }
+                        .associate { it }
                 }
-                val newIncomeMap: Map<Category, Int> = if (incomeTotalSum == 0L) emptyMap() else {
-                    incomeData.associate { stat ->
-                        val percent = ((stat.totalAmount.toDouble() / incomeTotalSum) * 100).toInt()
+
+                val newIncomeMap: Map<Category, Float> = if (incomeTotalSum == 0L) emptyMap() else {
+                    incomeData.map { stat ->
+                        val percent = round((stat.totalAmount.toFloat() / incomeTotalSum.toFloat()) * 100f * 10) / 10f
 
                         Category(
                             id = stat.categoryId,
@@ -95,6 +102,8 @@ class StatisticViewModel @Inject constructor(private val moneyRepository: MoneyR
                             type = stat.type
                         ) to percent
                     }
+                        .sortedByDescending { it.second }
+                        .associate { it }
                 }
 
                 _statisticState.update { it.copy(expenseData = newExpenseMap, incomeData = newIncomeMap) }
