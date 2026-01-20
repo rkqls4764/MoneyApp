@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -50,15 +51,15 @@ class StatisticViewModel @Inject constructor(private val moneyRepository: MoneyR
 
         viewModelScope.launch {
             moneyRepository.search(
-                startDate = query.startDate.withHour(0).withMinute(0).withSecond(0),
-                endDate = query.endDate.withHour(23).withMinute(59).withSecond(59),
+                startDate = query.startDate.with(LocalTime.MIN),
+                endDate = query.endDate.with(LocalTime.MAX),
                 types = null,
                 categoryIds = query.categoryIds,
                 keyword = null
             ).collect { data ->
                 _statisticState.update { it.copy(histories = data) }
 
-                Log.d(TAG, "[searchHistories] 내역 목록 검색 성공 (기간: ${query.startDate} ~ ${query.endDate} / 카테고리: ${query.categoryIds})\n${data}")
+                Log.d(TAG, "[searchHistories] 내역 목록 검색 성공 (기간: ${query.startDate.with(LocalTime.MIN)} ~ ${query.endDate.with(LocalTime.MAX)} / 카테고리: ${query.categoryIds})\n${data}")
             }
         }
     }
@@ -69,8 +70,8 @@ class StatisticViewModel @Inject constructor(private val moneyRepository: MoneyR
 
         viewModelScope.launch {
             moneyRepository.getCategoryStats(
-                start = query.startDate.withHour(0).withMinute(0).withSecond(0),
-                end = query.endDate.withHour(23).withMinute(59).withSecond(59),
+                start = query.startDate.with(LocalTime.MIN),
+                end = query.endDate.with(LocalTime.MAX),
             ).collect { data ->
                 val expenseData = data.filter { it.type == TransactionType.EXPENSE }
                 val incomeData = data.filter { it.type == TransactionType.INCOME }
@@ -108,7 +109,7 @@ class StatisticViewModel @Inject constructor(private val moneyRepository: MoneyR
 
                 _statisticState.update { it.copy(expenseData = newExpenseMap, incomeData = newIncomeMap) }
 
-                Log.d(TAG, "[getCategoryStatistic] 카테고리별 통계 조회 성공 (기간: ${query.startDate} ~ ${query.endDate})\n${data}")
+                Log.d(TAG, "[getCategoryStatistic] 카테고리별 통계 조회 성공 (기간: ${query.startDate.with(LocalTime.MIN)} ~ ${query.endDate.with(LocalTime.MAX)})\n${data}")
             }
         }
     }

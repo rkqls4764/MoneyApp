@@ -1,8 +1,10 @@
 package com.example.moneyapp.util
 
+import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 import java.util.Locale
 
@@ -52,10 +54,9 @@ fun LocalDateTime.toYmDisplayString(): String {
 
 /* LocalDateTime -> String (yyyy년 mm월 week주) */
 fun LocalDateTime.toYmWeekDisplayString(): String {
-    val weekOfMonth = this.get(
-        WeekFields.of(Locale.KOREA).weekOfMonth()
-    )
-    return "${this.year}년 ${this.monthValue}월 ${weekOfMonth}주"
+    val day = this.dayOfMonth
+    val block = ((day - 1) / 7) + 1
+    return "${this.year}년 ${this.monthValue}월 ${block}주"
 }
 
 /* 숫자 천 단위마다 콤마 구분 */

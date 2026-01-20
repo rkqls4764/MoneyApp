@@ -30,18 +30,34 @@ object StatisticReducer {
     private fun handleClickedMoveNext(
         state: StatisticState
     ): StatisticState {
-        val newStartDate = when (state.query.period) {
-            PeriodType.YEAR -> state.query.startDate.plusYears(1)
-            PeriodType.MONTH -> state.query.startDate.plusMonths(1)
-            PeriodType.WEEK -> state.query.startDate.plusWeeks(1)
-            PeriodType.CUSTOM -> state.query.startDate
-        }
+        val period = state.query.period
 
-        val newEndDate = when (state.query.period) {
-            PeriodType.YEAR -> state.query.endDate.plusYears(1)
-            PeriodType.MONTH -> state.query.endDate.plusMonths(1)
-            PeriodType.WEEK -> state.query.endDate.plusWeeks(1)
-            PeriodType.CUSTOM -> state.query.endDate
+        val (newStartDate, newEndDate) = when (period) {
+            PeriodType.YEAR -> {
+                val base = state.query.startDate.plusYears(1)
+                val start = base.withDayOfYear(1)
+                val end = base.withMonth(12).withDayOfMonth(31)
+                start to end
+            }
+
+            PeriodType.MONTH -> {
+                val base = state.query.startDate.plusMonths(1)
+                val start = base.withDayOfMonth(1)
+                val end = base.withDayOfMonth(base.toLocalDate().lengthOfMonth())
+                start to end
+            }
+
+            PeriodType.WEEK -> {
+                val nextStart = state.query.endDate.plusDays(1)
+
+                val start = nextStart
+                val endDay = minOf(nextStart.dayOfMonth + 6, nextStart.toLocalDate().lengthOfMonth())
+                val end = nextStart.withDayOfMonth(endDay)
+
+                start to end
+            }
+
+            PeriodType.CUSTOM -> state.query.startDate to state.query.endDate
         }
 
         val newDateStr = when (state.query.period) {
@@ -57,34 +73,37 @@ object StatisticReducer {
     private fun handleClickedMovePrev(
         state: StatisticState
     ): StatisticState {
-        val newStartDate = when (state.query.period) {
-            PeriodType.YEAR -> {
-                state.query.startDate.minusYears(1)
-            }
-            PeriodType.MONTH -> {
-                state.query.startDate.minusMonths(1)
-            }
-            PeriodType.WEEK -> {
-                state.query.startDate.minusWeeks(1)
-            }
-            PeriodType.CUSTOM -> {
-                state.query.startDate
-            }
-        }
+        val period = state.query.period
 
-        val newEndDate = when (state.query.period) {
+        val (newStartDate, newEndDate) = when (period) {
             PeriodType.YEAR -> {
-                state.query.endDate.minusYears(1)
+                val base = state.query.startDate.minusYears(1)
+                val start = base.withDayOfYear(1)
+                val end = base.withMonth(12).withDayOfMonth(31)
+                start to end
             }
+
             PeriodType.MONTH -> {
-                state.query.endDate.minusMonths(1)
+                val base = state.query.startDate.minusMonths(1)
+                val start = base.withDayOfMonth(1)
+                val end = base.withDayOfMonth(base.toLocalDate().lengthOfMonth())
+                start to end
             }
+
             PeriodType.WEEK -> {
-                state.query.endDate.minusWeeks(1)
+                val prevBase = state.query.startDate.minusDays(1)
+
+                val day = prevBase.dayOfMonth
+                val startDay = ((day - 1) / 7) * 7 + 1
+                val endDay = minOf(startDay + 6, prevBase.toLocalDate().lengthOfMonth())
+
+                val start = prevBase.withDayOfMonth(startDay)
+                val end = prevBase.withDayOfMonth(endDay)
+
+                start to end
             }
-            PeriodType.CUSTOM -> {
-                state.query.endDate
-            }
+
+            PeriodType.CUSTOM -> state.query.startDate to state.query.endDate
         }
 
         val newDateStr = when (state.query.period) {
@@ -110,15 +129,42 @@ object StatisticReducer {
         periodName: String
     ): StatisticState {
         val period = PeriodType.fromDisplayName(periodName) ?: PeriodType.CUSTOM
+        val baseDate = state.query.startDate
 
-        val newDateStr = when (period) {
-            PeriodType.YEAR -> state.query.startDate.toYDisplayString()
-            PeriodType.MONTH -> state.query.startDate.toYmDisplayString()
-            PeriodType.WEEK -> state.query.startDate.toYmWeekDisplayString()
-            PeriodType.CUSTOM -> "${state.query.startDate.toYmdString()}  ~  ${state.query.endDate.toYmdString()}"
+        val (newStartDate, newEndDate) = when (period) {
+            PeriodType.YEAR -> {
+                val start = baseDate.withDayOfYear(1)
+                val end = baseDate.withMonth(12).withDayOfMonth(31)
+                start to end
+            }
+            PeriodType.MONTH -> {
+                val start = baseDate.withDayOfMonth(1)
+                val end = baseDate.withDayOfMonth(baseDate.toLocalDate().lengthOfMonth())
+                start to end
+            }
+            PeriodType.WEEK -> {
+                val day = baseDate.dayOfMonth
+                val startDay = ((day - 1) / 7) * 7 + 1
+                val endDay = minOf(startDay + 6, baseDate.toLocalDate().lengthOfMonth())
+
+                val start = baseDate.withDayOfMonth(startDay)
+                val end = baseDate.withDayOfMonth(endDay)
+
+                start to end
+            }
+            PeriodType.CUSTOM -> {
+                state.query.startDate to state.query.endDate
+            }
         }
 
-        return state.copy(query = state.query.copy(period = period), dateStr = newDateStr)
+        val newDateStr = when (period) {
+            PeriodType.YEAR -> newStartDate.toYDisplayString()
+            PeriodType.MONTH -> newStartDate.toYmDisplayString()
+            PeriodType.WEEK -> newStartDate.toYmWeekDisplayString()
+            PeriodType.CUSTOM -> "${newStartDate.toYmdString()}  ~  ${newEndDate.toYmdString()}"
+        }
+
+        return state.copy(query = state.query.copy(period = period, startDate = newStartDate, endDate = newEndDate), dateStr = newDateStr)
     }
 
     private fun handleChangedDate(
