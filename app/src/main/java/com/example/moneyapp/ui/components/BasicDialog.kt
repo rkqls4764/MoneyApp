@@ -5,6 +5,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
@@ -23,6 +24,7 @@ import com.example.moneyapp.ui.theme.MainBlue
 import com.example.moneyapp.ui.theme.MainRed
 import com.example.moneyapp.ui.theme.MainYellow
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
@@ -104,8 +106,32 @@ fun BasicDatePickerDialog(
             ?.toEpochMilli()
     }
 
+    // 2021-01-01 ~ 2100-12-31 범위만 가능
+    val minMillis = remember {
+        LocalDate.of(2021, 1, 1)
+            .atStartOfDay(zone)
+            .toInstant()
+            .toEpochMilli()
+    }
+    val maxMillis = remember {
+        LocalDate.of(2100, 12, 31)
+            .plusDays(1) // inclusive 처리용(다음날 00:00 미만)
+            .atStartOfDay(zone)
+            .toInstant()
+            .toEpochMilli()
+    }
+
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = initialMillis
+        initialSelectedDateMillis = initialMillis,
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis in minMillis until maxMillis
+            }
+
+            override fun isSelectableYear(year: Int): Boolean {
+                return year in 2021..2100
+            }
+        }
     )
 
     DatePickerDialog(

@@ -18,13 +18,21 @@ object CalendarReducer {
     private fun handleClickedMoveNextMonth(
         state: CalendarState
     ): CalendarState {
-        return state.copy(yearMonth = state.yearMonth.plusMonths(1))
+        val newYearMonth = state.yearMonth.plusMonths(1)
+
+        if (newYearMonth.year !in 2021..2100) return state
+
+        return state.copy(yearMonth = newYearMonth)
     }
 
     private fun handleClickedMovePrevMonth(
         state: CalendarState
     ): CalendarState {
-        return state.copy(yearMonth = state.yearMonth.minusMonths(1))
+        val newYearMonth = state.yearMonth.minusMonths(1)
+
+        if (newYearMonth.year !in 2021..2100) return state
+
+        return state.copy(yearMonth = newYearMonth)
     }
 
     private fun handleCloseSheet(
