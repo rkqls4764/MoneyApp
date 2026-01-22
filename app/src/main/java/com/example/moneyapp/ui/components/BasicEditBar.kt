@@ -215,7 +215,8 @@ fun BasicDropdownEditBar(
     isRequired: Boolean = false,
     options: List<String>,
     selected: String,
-    onSelected: (String) -> Unit
+    onSelected: (String) -> Unit,
+    enabled: Boolean = true
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
@@ -238,7 +239,8 @@ fun BasicDropdownEditBar(
         BasicDropDownField(
             options = options,
             selected = selected,
-            onSelected = { onSelected(it) }
+            onSelected = { onSelected(it) },
+            enabled = enabled
         )
     }
 }
