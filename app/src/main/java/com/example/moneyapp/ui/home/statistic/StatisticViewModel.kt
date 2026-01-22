@@ -42,6 +42,8 @@ class StatisticViewModel @Inject constructor(private val moneyRepository: MoneyR
             is StatisticEvent.SelectedPeriodWith -> getCategoryStatistic()
             StatisticEvent.ClickedInitFilter -> getCategoryStatistic()
             StatisticEvent.ClickedHistory -> _uiEffect.tryEmit(UiEffect.Navigate("historyDetail"))
+            is StatisticEvent.ChangedYearWith -> getCategoryStatistic()
+            is StatisticEvent.ChangedMonthWith -> getCategoryStatistic()
             else -> Unit
         }
     }

@@ -306,18 +306,34 @@ private fun FilterBottomSheetContent(statisticState: StatisticState, onEvent: (S
             onSelected = { onEvent(StatisticEvent.SelectedPeriodWith(it)) }
         )
 
+        BasicDropdownEditBar(
+            name = "연",
+            options = (2021..2100).map { it.toString() },
+            selected = statisticState.query.startDate.year.toString(),
+            onSelected = { onEvent(StatisticEvent.ChangedYearWith(it)) },
+            enabled = statisticState.query.period == PeriodType.YEAR || statisticState.query.period == PeriodType.MONTH || statisticState.query.period == PeriodType.WEEK
+        )
+
+        BasicDropdownEditBar(
+            name = "월",
+            options = (1..12).map { it.toString() },
+            selected = statisticState.query.startDate.monthValue.toString(),
+            onSelected = { onEvent(StatisticEvent.ChangedMonthWith(it)) },
+            enabled = statisticState.query.period == PeriodType.MONTH || statisticState.query.period == PeriodType.WEEK
+        )
+
         BasicDateEditBar(
             name = "검색 시작 날짜",
             value = statisticState.query.startDate,
             onValueChange = { onEvent(StatisticEvent.ChangedDateWith(DateType.START, it)) },
-            enabled = if (statisticState.query.period == PeriodType.CUSTOM) true else false
+            enabled = statisticState.query.period == PeriodType.CUSTOM
         )
 
         BasicDateEditBar(
             name = "검색 종료 날짜",
             value = statisticState.query.endDate,
             onValueChange = { onEvent(StatisticEvent.ChangedDateWith(DateType.END, it)) },
-            enabled = if (statisticState.query.period == PeriodType.CUSTOM) true else false
+            enabled = statisticState.query.period == PeriodType.CUSTOM
         )
 
         Row(

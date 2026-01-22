@@ -44,4 +44,14 @@ sealed interface StatisticEvent {
 
     /* 내역 아이템 클릭 이벤트 */
     data object ClickedHistory: StatisticEvent
+
+    /* 검색할 연 값 변경 이벤트 */
+    data class ChangedYearWith(
+        val year: String
+    ): StatisticEvent
+
+    /* 검색할 월 값 변경 이벤트 */
+    data class ChangedMonthWith(
+        val month: String
+    ): StatisticEvent
 }

@@ -35,7 +35,8 @@ fun BasicDropDownField(
     modifier: Modifier = Modifier,
     options: List<String>,
     selected: String,
-    onSelected: (String) -> Unit
+    onSelected: (String) -> Unit,
+    enabled: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }  // 열림 여부
 
@@ -51,7 +52,11 @@ fun BasicDropDownField(
     ExposedDropdownMenuBox(
         modifier = modifier.fillMaxWidth(),
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
+        onExpandedChange = {
+            if (enabled) {
+                expanded = !expanded
+            }
+        }
     ) {
         OutlinedTextField(
             modifier = modifier.fillMaxWidth().menuAnchor(),
@@ -67,7 +72,8 @@ fun BasicDropDownField(
                     contentDescription = null,
                     modifier = Modifier.rotate(rotation)
                 )
-            }
+            },
+            enabled = enabled
         )
 
         DropdownMenu(
