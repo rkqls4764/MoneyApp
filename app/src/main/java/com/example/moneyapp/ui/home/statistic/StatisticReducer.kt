@@ -191,8 +191,8 @@ object StatisticReducer {
         value: LocalDateTime
     ): StatisticState {
         return when (type) {
-            DateType.START -> state.copy(query = state.query.copy(startDate = value))
-            DateType.END -> state.copy(query = state.query.copy(endDate = value))
+            DateType.START -> state.copy(query = state.query.copy(startDate = value), dateStr = "${value.toYmdString()}  ~  ${state.query.endDate.toYmdString()}")
+            DateType.END -> state.copy(query = state.query.copy(endDate = value), dateStr = "${state.query.startDate.toYmdString()}  ~  ${value.toYmdString()}")
         }
     }
 
