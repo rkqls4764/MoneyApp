@@ -121,7 +121,7 @@ private fun HistoryDetailContent(historyInfo: TransactionWithCategory) {
 
         BasicInfoBar(
             name = "카테고리",
-            value = if (historyInfo.transaction.categoryId == null) "없음" else historyInfo.transaction.categoryId.toString()
+            value = historyInfo.category?.name ?: "없음"
         )
 
         BasicInfoBar(

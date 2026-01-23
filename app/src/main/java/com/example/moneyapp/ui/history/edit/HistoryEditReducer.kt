@@ -19,7 +19,7 @@ object HistoryEditReducer {
     private fun handleInit(
         data: TransactionWithCategory
     ): HistoryEditState {
-        return HistoryEditState(inputData = data)
+        return HistoryEditState(inputData = data, selectedCategoryName = data.category?.name ?: "")
     }
 
     private val historyUpdaters: Map<HistoryField, (TransactionWithCategory, String) -> TransactionWithCategory> =
