@@ -59,6 +59,7 @@ import com.example.moneyapp.ui.components.BasicNumberEditBar
 import com.example.moneyapp.ui.components.BasicSearchEditBar
 import com.example.moneyapp.ui.components.BasicTimeEditBar
 import com.example.moneyapp.ui.components.BasicTopBar
+import com.example.moneyapp.ui.components.DeleteButtonSearchEditBar
 import com.example.moneyapp.ui.components.EmptyState
 import com.example.moneyapp.ui.history.HistoryViewModel
 import com.example.moneyapp.ui.theme.BodyText
@@ -165,10 +166,11 @@ private fun HistoryAddContent(historyAddState: HistoryAddState, onEvent: (Histor
             isRequired = true
         )
 
-        BasicSearchEditBar(
+        DeleteButtonSearchEditBar(
             name = "카테고리",
-            value = historyAddState.selectedCategoryName,
-            onClick = { openSheet = true }
+            value = historyAddState.inputData.category?.name ?: "",
+            onClick = { openSheet = true },
+            onClickDelete = { onEvent(HistoryAddEvent.ChangedCategoryWith(null)) }
         )
 
         BasicEditBar(
