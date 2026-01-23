@@ -33,7 +33,7 @@ sealed interface HistoryEditEvent {
 
     // 카테고리 값 변경 이벤트
     data class ChangedCategoryWith(
-        val category: Category
+        val category: Category?
     ): HistoryEditEvent
 
     // 수정 버튼 클릭 이벤트

@@ -3,6 +3,7 @@ package com.example.moneyapp.ui.category.detail
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,12 +29,14 @@ import com.example.moneyapp.ui.category.edit.CategoryEditEvent
 import com.example.moneyapp.ui.components.BasicButton
 import com.example.moneyapp.ui.components.BasicDialog
 import com.example.moneyapp.ui.components.BasicInfoBar
+import com.example.moneyapp.ui.components.BlockTouchOverlay
 import com.example.moneyapp.ui.components.DeleteIconTopBar
 
 /* 카테고리 상세 화면 */
 @Composable
 fun CategoryDetailScreen(categoryViewModel: CategoryViewModel) {
     val focusManager = LocalFocusManager.current
+    var isClosing by remember { mutableStateOf(false) }
 
     val onEvent = categoryViewModel::onDetailEvent
     val categoryDetailState by categoryViewModel.categoryDetailState.collectAsState()
@@ -44,7 +47,10 @@ fun CategoryDetailScreen(categoryViewModel: CategoryViewModel) {
         BasicDialog(
             title = "카테고리를 삭제하시겠습니까?",
             onDismiss = { openDelete = false },
-            onClickConfirm = { onEvent(CategoryDetailEvent.ClickedDelete) }
+            onClickConfirm = {
+                isClosing = true
+                onEvent(CategoryDetailEvent.ClickedDelete)
+            }
         )
     }
 
@@ -57,27 +63,35 @@ fun CategoryDetailScreen(categoryViewModel: CategoryViewModel) {
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.White)
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 30.dp)
-                .verticalScroll(rememberScrollState())
-                .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
-            verticalArrangement = Arrangement.SpaceBetween
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            CategoryDetailContent(
-                categoryInfo = categoryDetailState.categoryInfo
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.White)
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 30.dp)
+                    .verticalScroll(rememberScrollState())
+                    .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                CategoryDetailContent(
+                    categoryInfo = categoryDetailState.categoryInfo
+                )
 
-            BasicButton(
-                name = "수정하기",
-                onClick = {
-                    categoryViewModel.onEditEvent(CategoryEditEvent.InitWith(data = categoryDetailState.categoryInfo))
-                    onEvent(CategoryDetailEvent.ClickedEdit)
-                }
+                BasicButton(
+                    name = "수정하기",
+                    onClick = {
+                        categoryViewModel.onEditEvent(CategoryEditEvent.InitWith(data = categoryDetailState.categoryInfo))
+                        onEvent(CategoryDetailEvent.ClickedEdit)
+                    }
+                )
+            }
+
+            BlockTouchOverlay(
+                enabled = isClosing
             )
         }
     }

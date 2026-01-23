@@ -19,6 +19,5 @@ data class HistoryAddState(
         ),
         category = null
     ),
-    val categories: List<Category> = emptyList(),
-    val selectedCategoryName: String = ""
+    val categories: List<Category> = emptyList()
 )

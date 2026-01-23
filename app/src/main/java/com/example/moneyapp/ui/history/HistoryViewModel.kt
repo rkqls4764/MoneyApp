@@ -115,7 +115,8 @@ class HistoryViewModel @Inject constructor(private val moneyRepository: MoneyRep
             _uiEffect.emit(UiEffect.NavigateBack)
             _uiEffect.emit(UiEffect.ShowToast("내역이 수정되었습니다"))
 
-            Log.d(TAG, "[updateHistory] 내역 수정 성공\n${historyEditState.value.inputData.transaction}")
+            Log.d(TAG, "[updateHistory] 내역 수정 성공\n${historyEditState.value.inputData}")
+            Log.d(TAG, "[updateHistory] \n${historyDetailState.value.historyInfo}")
         }
     }
 

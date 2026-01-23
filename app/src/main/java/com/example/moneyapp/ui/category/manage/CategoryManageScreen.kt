@@ -21,6 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +35,7 @@ import com.example.moneyapp.ui.category.CategoryViewModel
 import com.example.moneyapp.ui.category.detail.CategoryDetailEvent
 import com.example.moneyapp.ui.components.BasicFloatingButton
 import com.example.moneyapp.ui.components.BasicTopBar
+import com.example.moneyapp.ui.components.BlockTouchOverlay
 import com.example.moneyapp.ui.components.EmptyState
 import com.example.moneyapp.ui.history.add.TypeSelectorItem
 import com.example.moneyapp.ui.theme.BodyText
@@ -41,6 +45,7 @@ import com.example.moneyapp.ui.theme.MainBlack
 @Composable
 fun CategoryManageScreen(categoryViewModel: CategoryViewModel) {
     val focusManager = LocalFocusManager.current
+    var isClosing by remember { mutableStateOf(false) }
 
     val onEvent = categoryViewModel::onManageEvent
     val categoryManageState by categoryViewModel.categoryManageState.collectAsState()
@@ -53,7 +58,10 @@ fun CategoryManageScreen(categoryViewModel: CategoryViewModel) {
         topBar = {
             BasicTopBar(
                 title = "카테고리 관리",
-                onClickNavIcon = { onEvent(CategoryManageEvent.ClickedBack) }
+                onClickNavIcon = {
+                    isClosing = true
+                    onEvent(CategoryManageEvent.ClickedBack)
+                }
             )
         },
         floatingActionButton = {
@@ -66,28 +74,36 @@ fun CategoryManageScreen(categoryViewModel: CategoryViewModel) {
             }
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.White)
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 30.dp)
-                .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) }
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            TypeSelectorItem(
-                selected = categoryManageState.type,
-                onSelected = { onEvent(CategoryManageEvent.ChangedTypeWith(it)) }
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.White)
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 30.dp)
+                    .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) }
+            ) {
+                TypeSelectorItem(
+                    selected = categoryManageState.type,
+                    onSelected = { onEvent(CategoryManageEvent.ChangedTypeWith(it)) }
+                )
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            CategoryListContent(
-                categories = categoryManageState.categories.filter { it.type == categoryManageState.type },
-                onClick = {
-                    onEvent(CategoryManageEvent.ClickedCategory)
-                    categoryViewModel.onDetailEvent(CategoryDetailEvent.InitWith(it))
-                }
+                CategoryListContent(
+                    categories = categoryManageState.categories.filter { it.type == categoryManageState.type },
+                    onClick = {
+                        onEvent(CategoryManageEvent.ClickedCategory)
+                        categoryViewModel.onDetailEvent(CategoryDetailEvent.InitWith(it))
+                    }
+                )
+            }
+
+            BlockTouchOverlay(
+                enabled = isClosing
             )
         }
     }

@@ -42,7 +42,7 @@ object HistoryEditReducer {
         state: HistoryEditState,
         type: TransactionType
     ): HistoryEditState {
-        return state.copy(inputData = state.inputData.copy(transaction = state.inputData.transaction.copy(type = type, categoryId = null)), selectedCategoryName = "")
+        return state.copy(inputData = state.inputData.copy(transaction = state.inputData.transaction.copy(type = type, categoryId = null)))
     }
 
     private fun handleChangedDate(
@@ -54,8 +54,8 @@ object HistoryEditReducer {
 
     private fun handleChangedCategory(
         state: HistoryEditState,
-        category: Category
+        category: Category?
     ): HistoryEditState {
-        return state.copy(inputData = state.inputData.copy(transaction = state.inputData.transaction.copy(categoryId = category.id)), selectedCategoryName = category.name)
+        return state.copy(inputData = state.inputData.copy(transaction = state.inputData.transaction.copy(categoryId = category?.id), category = category))
     }
 }
