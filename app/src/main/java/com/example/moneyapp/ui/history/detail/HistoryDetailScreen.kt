@@ -121,7 +121,7 @@ private fun HistoryDetailContent(historyInfo: TransactionWithCategory) {
 
         BasicInfoBar(
             name = "카테고리",
-            value = historyInfo.category?.name ?: "없음"
+            value = historyInfo.category?.name ?: ""
         )
 
         BasicInfoBar(
@@ -131,7 +131,7 @@ private fun HistoryDetailContent(historyInfo: TransactionWithCategory) {
 
         BasicInfoBar(
             name = "메모",
-            value = if (historyInfo.transaction.memo.isNullOrEmpty()) "없음" else historyInfo.transaction.memo
+            value = if (historyInfo.transaction.memo.isNullOrEmpty()) "" else historyInfo.transaction.memo
         )
     }
 }
