@@ -3,6 +3,7 @@ package com.example.moneyapp.ui.history.edit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +30,7 @@ import com.example.moneyapp.ui.components.BasicNumberEditBar
 import com.example.moneyapp.ui.components.BasicSearchEditBar
 import com.example.moneyapp.ui.components.BasicTimeEditBar
 import com.example.moneyapp.ui.components.BasicTopBar
+import com.example.moneyapp.ui.components.BlockTouchOverlay
 import com.example.moneyapp.ui.components.DeleteButtonSearchEditBar
 import com.example.moneyapp.ui.history.HistoryViewModel
 import com.example.moneyapp.ui.history.add.CategoryBottomSheetContent
@@ -40,6 +42,7 @@ import com.example.moneyapp.ui.history.add.HistoryField
 @Composable
 fun HistoryEditScreen(historyViewModel: HistoryViewModel) {
     val focusManager = LocalFocusManager.current
+    var isClosing by remember { mutableStateOf(false) }
 
     val onEvent = historyViewModel::onEditEvent
     val historyEditState by historyViewModel.historyEditState.collectAsState()
@@ -48,29 +51,40 @@ fun HistoryEditScreen(historyViewModel: HistoryViewModel) {
         topBar = {
             BasicTopBar(
                 title = "내역 수정",
-                onClickNavIcon = { onEvent(HistoryEditEvent.ClickedBack) }
+                onClickNavIcon = {
+                    isClosing = true
+                    onEvent(HistoryEditEvent.ClickedBack)
+                }
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.White)
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 30.dp)
-                .verticalScroll(rememberScrollState())
-                .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
-            verticalArrangement = Arrangement.SpaceBetween
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            HistoryEditContent(
-                historyEditState = historyEditState,
-                onEvent = onEvent
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.White)
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 30.dp)
+                    .verticalScroll(rememberScrollState())
+                    .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                HistoryEditContent(
+                    historyEditState = historyEditState,
+                    onEvent = onEvent
+                )
 
-            BasicButton(
-                name = "저장하기",
-                onClick = { onEvent(HistoryEditEvent.ClickedUpdate) }
+                BasicButton(
+                    name = "저장하기",
+                    onClick = { onEvent(HistoryEditEvent.ClickedUpdate) }
+                )
+            }
+
+            BlockTouchOverlay(
+                enabled = isClosing
             )
         }
     }

@@ -3,6 +3,7 @@ package com.example.moneyapp.ui.category.add
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -23,12 +27,14 @@ import com.example.moneyapp.ui.category.CategoryViewModel
 import com.example.moneyapp.ui.components.BasicButton
 import com.example.moneyapp.ui.components.BasicEditBar
 import com.example.moneyapp.ui.components.BasicTopBar
+import com.example.moneyapp.ui.components.BlockTouchOverlay
 import com.example.moneyapp.ui.history.add.EditTypeBar
 
 /* 카테고리 추가 화면 */
 @Composable
 fun CategoryAddScreen(categoryViewModel: CategoryViewModel) {
     val focusManager = LocalFocusManager.current
+    var isClosing by remember { mutableStateOf(false) }
 
     val onEvent = categoryViewModel::onAddEvent
     val categoryAddState by categoryViewModel.categoryAddState.collectAsState()
@@ -37,29 +43,40 @@ fun CategoryAddScreen(categoryViewModel: CategoryViewModel) {
         topBar = {
             BasicTopBar(
                 title = "카테고리 추가",
-                onClickNavIcon = { onEvent(CategoryAddEvent.ClickedBack) }
+                onClickNavIcon = {
+                    isClosing = true
+                    onEvent(CategoryAddEvent.ClickedBack)
+                }
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.White)
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 30.dp)
-                .verticalScroll(rememberScrollState())
-                .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
-            verticalArrangement = Arrangement.SpaceBetween
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            CategoryAddContent(
-                categoryAddState = categoryAddState,
-                onEvent = onEvent
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = Color.White)
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 30.dp)
+                    .verticalScroll(rememberScrollState())
+                    .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) },
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                CategoryAddContent(
+                    categoryAddState = categoryAddState,
+                    onEvent = onEvent
+                )
 
-            BasicButton(
-                name = "추가하기",
-                onClick = { onEvent(CategoryAddEvent.ClickedAdd)}
+                BasicButton(
+                    name = "추가하기",
+                    onClick = { onEvent(CategoryAddEvent.ClickedAdd)}
+                )
+            }
+
+            BlockTouchOverlay(
+                enabled = isClosing
             )
         }
     }
