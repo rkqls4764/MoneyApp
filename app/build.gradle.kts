@@ -13,11 +13,11 @@ hilt {
 }
 
 android {
-    namespace = "com.example.moneyapp"
+    namespace = "com.gabeen.moneyapp"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.moneyapp"
+        applicationId = "com.gabeen.moneyapp"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
