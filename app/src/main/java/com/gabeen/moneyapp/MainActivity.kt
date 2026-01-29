@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.gabeen.moneyapp.navigation.MainNavGraph
+import com.gabeen.moneyapp.ui.theme.FixedFontScaleTheme
 import com.gabeen.moneyapp.ui.theme.MoneyAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
@@ -16,8 +17,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MoneyAppTheme {
-                MainNavGraph()
+            FixedFontScaleTheme {
+                MoneyAppTheme {
+                    MainNavGraph()
+                }
             }
         }
     }

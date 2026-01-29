@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.input.KeyboardType
 import com.gabeen.moneyapp.ui.theme.BodyText
 import com.gabeen.moneyapp.ui.theme.MainBlack
 
@@ -22,7 +24,8 @@ fun BasicOutlinedTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    hint: String = ""
+    hint: String = "",
+    isNumber: Boolean = false
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -36,7 +39,10 @@ fun BasicOutlinedTextField(
                 text = value.ifBlank { hint },
                 fontSize = BodyText
             )
-        }
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = if (isNumber) KeyboardType.Number else KeyboardType.Text
+        )
     )
 }
 
