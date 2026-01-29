@@ -117,7 +117,8 @@ fun BasicNumberEditBar(
                 }
 
                 onValueChange(newValue)
-            }
+            },
+            isNumber = true
         )
     }
 }
@@ -249,41 +250,6 @@ fun BasicDropdownEditBar(
             selected = selected,
             onSelected = { onSelected(it) },
             enabled = enabled
-        )
-    }
-}
-
-/* 기본 검색 바 */
-@Composable
-fun BasicSearchEditBar(
-    name: String,
-    value: String,
-    onClick: () -> Unit = {},
-    isRequired: Boolean = false
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
-    ) {
-        Text(
-            text = buildAnnotatedString {
-                append(name)
-                if (isRequired) {
-                    append(" ")
-                    withStyle(style = SpanStyle(color = Color.Red)) {
-                        append("*")
-                    }
-                }
-            },
-            fontSize = CaptionText,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(start = 16.dp, bottom = 6.dp)
-        )
-
-        IconOutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = value,
-            icon = Icons.Default.Search,
-            onClick = { onClick() }
         )
     }
 }
