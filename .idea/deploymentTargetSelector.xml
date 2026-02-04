@@ -5,6 +5,7 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+<<<<<<< Updated upstream
       <SelectionState runConfigName="searchByCategory_returnsOnlySelectedCategory()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
@@ -18,6 +19,9 @@
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="getCategoryStats_calculatesCorrectSums()">
+=======
+      <SelectionState runConfigName="testCsvImportAndCategoryReuse()">
+>>>>>>> Stashed changes
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

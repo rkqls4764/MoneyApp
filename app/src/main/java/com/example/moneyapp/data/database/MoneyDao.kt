@@ -96,9 +96,9 @@ interface MoneyDao {
     ): Flow<List<CategoryStat>>
 
 
-
-
-
+    // 테스트 검증용: 모든 내역 가져오기
+    @Query("SELECT * FROM transaction_table") // 테이블 이름은 Entity의 클래스명 혹은 설정한 이름
+    suspend fun getAllTransactionsForTest(): List<MoneyTransaction>
 
 
 

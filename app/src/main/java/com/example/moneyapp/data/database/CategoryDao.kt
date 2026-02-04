@@ -6,14 +6,19 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+<<<<<<< Updated upstream:app/src/main/java/com/example/moneyapp/data/database/CategoryDao.kt
 import com.example.moneyapp.data.entity.Category
+=======
+import com.gabeen.moneyapp.data.entity.Category
+import com.gabeen.moneyapp.data.entity.TransactionType
+>>>>>>> Stashed changes:app/src/main/java/com/gabeen/moneyapp/data/database/CategoryDao.kt
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(category: Category)
+    suspend fun insert(category: Category): Long
 
     @Update
     suspend fun update(category: Category)
@@ -24,4 +29,13 @@ interface CategoryDao {
     // 전체 조회
     @Query("SELECT * FROM category_table")
     fun getAllCategories(): Flow<List<Category>>
+
+    // 파일 import 할 때 필요한거
+    // 카테고리 있는지 확인
+    @Query("SELECT id FROM category_table WHERE name = :name AND type = :type LIMIT 1")
+    suspend fun getCategoryIdByNameAndType(name: String, type: TransactionType): Long?
+
+    // 테스트 검증용: 모든 카테고리 가져오기
+    @Query("SELECT * FROM category_table")
+    suspend fun getAllCategoriesForTest(): List<Category>
 }
