@@ -6,12 +6,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-<<<<<<< Updated upstream:app/src/main/java/com/example/moneyapp/data/database/CategoryDao.kt
 import com.example.moneyapp.data.entity.Category
-=======
-import com.gabeen.moneyapp.data.entity.Category
-import com.gabeen.moneyapp.data.entity.TransactionType
->>>>>>> Stashed changes:app/src/main/java/com/gabeen/moneyapp/data/database/CategoryDao.kt
+import com.example.moneyapp.data.entity.TransactionType
 import kotlinx.coroutines.flow.Flow
 
 @Dao

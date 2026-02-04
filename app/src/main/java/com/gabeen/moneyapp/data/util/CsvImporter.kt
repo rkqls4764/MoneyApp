@@ -3,11 +3,11 @@ package com.gabeen.moneyapp.data.util
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.gabeen.moneyapp.data.database.CategoryDao
-import com.gabeen.moneyapp.data.database.MoneyDao
-import com.gabeen.moneyapp.data.entity.Category
-import com.gabeen.moneyapp.data.entity.MoneyTransaction
-import com.gabeen.moneyapp.data.entity.TransactionType
+import com.example.moneyapp.data.database.CategoryDao
+import com.example.moneyapp.data.database.MoneyDao
+import com.example.moneyapp.data.entity.Category
+import com.example.moneyapp.data.entity.MoneyTransaction
+import com.example.moneyapp.data.entity.TransactionType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
