@@ -22,12 +22,13 @@ import com.gabeen.moneyapp.ui.history.HistoryViewModel
 import com.gabeen.moneyapp.ui.home.calendar.CalendarScreen
 import com.gabeen.moneyapp.ui.home.calendar.CalendarViewModel
 import com.gabeen.moneyapp.ui.home.setting.SettingScreen
+import com.gabeen.moneyapp.ui.home.setting.SettingViewModel
 import com.gabeen.moneyapp.ui.home.statistic.StatisticScreen
 import com.gabeen.moneyapp.ui.home.statistic.StatisticViewModel
 
 /* 홈 화면 */
 @Composable
-fun HomeScreen(navController: NavController, calendarViewModel: CalendarViewModel, historyViewModel: HistoryViewModel, statisticViewModel: StatisticViewModel) {
+fun HomeScreen(navController: NavController, calendarViewModel: CalendarViewModel, historyViewModel: HistoryViewModel, statisticViewModel: StatisticViewModel, settingViewModel: SettingViewModel) {
     var showScreenNum by rememberSaveable { mutableStateOf(1) }  // 출력 화면
     var isFilterClicked by rememberSaveable { mutableStateOf(false) }
 
@@ -71,7 +72,7 @@ fun HomeScreen(navController: NavController, calendarViewModel: CalendarViewMode
             when (showScreenNum) {
                 0 -> { StatisticScreen(statisticViewModel = statisticViewModel, historyViewModel = historyViewModel, isFilterClicked = isFilterClicked, onDismiss = { isFilterClicked = false }) }
                 1 -> { CalendarScreen(calendarViewModel = calendarViewModel, historyViewModel = historyViewModel) }
-                2 -> { SettingScreen(navController = navController) }
+                2 -> { SettingScreen(navController = navController, settingViewModel = settingViewModel) }
             }
         }
     }

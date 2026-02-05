@@ -18,6 +18,7 @@ import com.gabeen.moneyapp.ui.history.detail.HistoryDetailScreen
 import com.gabeen.moneyapp.ui.history.edit.HistoryEditScreen
 import com.gabeen.moneyapp.ui.home.HomeScreen
 import com.gabeen.moneyapp.ui.home.calendar.CalendarViewModel
+import com.gabeen.moneyapp.ui.home.setting.SettingViewModel
 import com.gabeen.moneyapp.ui.home.statistic.StatisticViewModel
 
 @Composable
@@ -26,20 +27,22 @@ fun MainNavGraph(navController: NavHostController = rememberNavController()) {
     val historyViewModel: HistoryViewModel = hiltViewModel()
     val categoryViewModel: CategoryViewModel = hiltViewModel()
     val statisticViewModel: StatisticViewModel = hiltViewModel()
+    val settingViewModel: SettingViewModel = hiltViewModel()
 
     CollectUiEffect(
         navController = navController,
         calendarViewModel.uiEffect,
         historyViewModel.uiEffect,
         categoryViewModel.uiEffect,
-        statisticViewModel.uiEffect
+        statisticViewModel.uiEffect,
+        settingViewModel.uiEffect
     )
 
     NavHost(
         navController = navController,
         startDestination = "home"
     ) {
-        composable("home") { HomeScreen(navController, calendarViewModel, historyViewModel, statisticViewModel) }   // 홈 화면
+        composable("home") { HomeScreen(navController, calendarViewModel, historyViewModel, statisticViewModel, settingViewModel) }   // 홈 화면
 
         composable("historyAdd") { HistoryAddScreen(historyViewModel) }         // 내역 추가 화면
         composable("historyDetail") { HistoryDetailScreen(historyViewModel) }   // 내역 상세 화면
