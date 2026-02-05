@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -46,6 +47,12 @@ fun SettingScreen(navController: NavController) {
                 icon = Icons.Default.Category,
                 text = "카테고리 관리",
                 onClick = { navController.navigate("categoryManage") }
+            )
+
+            SettingMenuButton(
+                icon = Icons.Default.Upload,
+                text = "파일 업로드",
+                onClick = {  }
             )
         }
     }
