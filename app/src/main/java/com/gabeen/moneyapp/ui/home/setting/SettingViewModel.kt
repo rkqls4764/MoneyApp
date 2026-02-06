@@ -5,7 +5,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gabeen.moneyapp.data.util.CsvImporter
+import com.gabeen.moneyapp.data.util.CsvManager
 import com.gabeen.moneyapp.ui.effect.UiEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,11 +14,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.xml.sax.ErrorHandler
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingViewModel @Inject constructor(private val csvImporter: CsvImporter) : ViewModel() {
+class SettingViewModel @Inject constructor(private val csvManager: CsvManager) : ViewModel() {
     companion object {
         private const val TAG = "SettingViewModel"
     }
@@ -35,7 +34,7 @@ class SettingViewModel @Inject constructor(private val csvImporter: CsvImporter)
             _settingState.update { it.copy(isLoading = true) }
 
             try {
-                csvImporter.importCsv(uri, context)
+                csvManager.importCsv(uri, context)
 
                 _uiEffect.tryEmit(UiEffect.ShowToast("업로드가 완료되었습니다"))
                 Log.d(TAG, "[importCsv] csv 파일 업로드 성공")

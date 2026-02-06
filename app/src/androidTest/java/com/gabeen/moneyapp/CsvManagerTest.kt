@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.moneyapp.data.database.CategoryDao
+import com.gabeen.moneyapp.data.database.CategoryDao
 import com.gabeen.moneyapp.data.database.AppDatabase
 import com.gabeen.moneyapp.data.database.MoneyDao
-import com.gabeen.moneyapp.data.util.CsvImporter
+import com.gabeen.moneyapp.data.util.CsvManager
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -16,11 +16,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-public class CsvImporterTest {
+public class CsvManagerTest {
     private lateinit var db: AppDatabase
     private lateinit var transactionDao: MoneyDao
     private lateinit var categoryDao: CategoryDao
-    private lateinit var importer: CsvImporter
+    private lateinit var manager: CsvManager
 
     @Before
     fun createDb() {
@@ -29,7 +29,7 @@ public class CsvImporterTest {
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
         transactionDao = db.moneyDao()
         categoryDao = db.categoryDao()
-        importer = CsvImporter(transactionDao, categoryDao) // DAO를 주입받는 구조라고 가정
+        manager = CsvManager(transactionDao, categoryDao) // DAO를 주입받는 구조라고 가정
     }
 
     @After
@@ -49,7 +49,7 @@ public class CsvImporterTest {
         val inputStream = csvContent.byteInputStream()
 
         // 2. 임포트 실행
-        importer.processCsv(inputStream)
+        manager.processImport(inputStream)
 
         // 3. 검증: 트랜잭션이 2개 생성되었는가?
         val allTransactions = transactionDao.getAllTransactionsForTest() // 테스트용 전체조회 쿼리 필요

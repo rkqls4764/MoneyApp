@@ -11,6 +11,7 @@ import com.gabeen.moneyapp.data.entity.CategoryStat
 import com.gabeen.moneyapp.data.entity.MoneyTransaction
 import com.gabeen.moneyapp.data.entity.TransactionType
 import com.gabeen.moneyapp.data.entity.TransactionWithCategory
+import com.gabeen.moneyapp.data.entity.TransactionWithCategoryName
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 
@@ -100,6 +101,18 @@ interface MoneyDao {
     suspend fun getAllTransactionsForTest(): List<MoneyTransaction>
 
 
+    // csv 파일 export 용
+    @Query("""
+        SELECT t.amount, t.description, t.memo, t.type, t.date, c.name as categoryName 
+        FROM transaction_table t
+        LEFT JOIN category_table c ON t.categoryId = c.id
+        WHERE t.date BETWEEN :startDate AND :endDate
+        ORDER BY t.date DESC
+    """)
+    suspend fun getAllTransactionsForExport(
+        startDate: LocalDateTime,
+        endDate: LocalDateTime
+    ): List<TransactionWithCategoryName>
 
 
 

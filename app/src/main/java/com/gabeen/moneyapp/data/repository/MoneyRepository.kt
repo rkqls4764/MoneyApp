@@ -63,8 +63,8 @@ class MoneyRepository @Inject constructor(private val moneyDao: MoneyDao) {
         // 카테고리 리스트 설정
         val rawCategoryIds = categoryIds ?: emptyList() // null이면 빈 리스트로
         val useCategoryFilter = rawCategoryIds.isNotEmpty() // null이면 false, 있으면 true
-        val includeNullCategory = rawCategoryIds.contains(CATEGORY_UNCATEGORIZED) // 분류 없음 카테고리(0번 아이디) 포함 여부
-        val realCategoryIds = rawCategoryIds.filter { it != CATEGORY_UNCATEGORIZED } // 0번 아이디 제외(없는 값임)
+        val includeNullCategory = rawCategoryIds.contains(CATEGORY_UNCATEGORIZED) // 분류 없음 카테고리(-1번 아이디) 포함 여부
+        val realCategoryIds = rawCategoryIds.filter { it != CATEGORY_UNCATEGORIZED } // -1번 아이디 제외(없는 값임)
 
         return moneyDao.searchTransactions(
             startDate = startDate,
